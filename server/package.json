@@ -5,10 +5,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "echo \"dev\"",
-    "build": "echo \"build\""
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler publish",
+    "build": "echo \"success\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230228.0",
+    "@types/node": "^18.15.11",
+    "@types/uuid": "^9.0.1",
+    "typescript": "^4.9.5",
+    "wrangler": "2.12.0"
+  },
+  "dependencies": {
+    "itty-router": "^3.0.11",
+    "uuid": "^9.0.0"
+  }
 }
