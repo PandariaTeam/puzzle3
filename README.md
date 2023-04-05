@@ -29,7 +29,7 @@ cd puzzle3
 rush update
 
 # build dependencies of our app at first
-rush build -T @rush-monorepo/cra-app
+rush build -T @puzzle3/web
 
 cd apps/cra-app
 

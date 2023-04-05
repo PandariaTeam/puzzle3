@@ -1,5 +1,5 @@
 {
-  "name": "@rush-monorepo/cra-app",
+  "name": "@puzzle3/web",
   "version": "1.0.0",
   "private": true,
   "scripts": {

@@ -5,7 +5,6 @@ import CracoAlias from 'craco-alias';
 import path from 'path';
 
 import { getLoader, loaderByName, whenDev } from '@craco/craco';
-
 import type { CracoConfig } from '@craco/craco';
 
 const resolvePackage = (relativePath: string) => path.join(__dirname, relativePath);
