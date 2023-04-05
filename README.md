@@ -31,7 +31,7 @@ rush update
 # build dependencies of our app at first
 rush build -T @puzzle3/web
 
-cd apps/cra-app
+cd apps/web
 
 # start app
 rushx start # or npm start
