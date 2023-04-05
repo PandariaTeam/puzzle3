@@ -1,0 +1,15 @@
+{
+  "files.associations": {
+    "rush.json": "jsonc",
+    "artifactory.json": "jsonc",
+    "build-cache.json": "jsonc",
+    "command-line.json": "jsonc",
+    "common-versions.json": "jsonc",
+    "experiments.json": "jsonc",
+    "version-policies.json": "jsonc",
+    "tsconfig.json": "jsonc",
+    "rush-plugins.json": "jsonc"
+  },
+  "npm.packageManager": "pnpm",
+  "eslint.packageManager": "pnpm"
+}
