@@ -1,0 +1,11 @@
+{
+  "name": "@puzzle3/web",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "dev": "echo \"dev\"",
+    "build": "echo \"build\""
+  }
+}
