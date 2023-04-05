@@ -1,9 +1,13 @@
+import { IPuzzle3Metadata } from '@puzzle3/types';
 import { client } from './request';
 
 export const getMetaDataById = (id: string) => {
   return client.get(`/${id}`);
 };
 
-export const putBoardDate = ({ board_id, ...rest }: any) => {
-  client.put('/', { ...rest });
+interface Payload {
+  metadata: IPuzzle3Metadata;
+}
+export const createPuzzle = (payload: Payload) => {
+  return client.post('', { ...payload });
 };
