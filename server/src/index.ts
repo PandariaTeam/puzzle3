@@ -34,7 +34,7 @@ export default {
     };
 
     // 页面响应
-    router.get('/api/metadata/:nftId', getMetadataRoute);
+    router.get('/api/metadata/:puzzleId', getMetadataRoute);
     router.put('/api/metadata', putMetadataRoute);
 
     router.all('*', () => new Response('404 Not Found', { status: 404 }));

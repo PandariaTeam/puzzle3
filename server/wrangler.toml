@@ -1,3 +1,8 @@
 name = "puzzle3_server"
 main = "src/index.ts"
 compatibility_date = "2023-04-05"
+
+kv_namespaces = [
+  # mapping(`puzzleId` => IPuzzle3Metadata)
+  { binding = "puzzle3_metadata_kv", id = "48a67456dcc7440685a23381c4307ed1", preview_id = "4ec185a7c45649cda261a20acf577c69" }
+]
