@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../../context';
+import { useStore } from '@/context';
 
 function User() {
   const {
