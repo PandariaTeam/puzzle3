@@ -4,11 +4,10 @@ import Header from './components/Header';
 import Home from './pages/home';
 import User from './pages/user';
 import Creater from './pages/creater';
-import './App.css';
 
 function App() {
   return (
-    <div className='App'>
+    <div>
       <Header />
       <BrowserRouter>
         <Routes>
