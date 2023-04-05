@@ -28,3 +28,4 @@ cache
 artifacts
 
 contracts/env.ts
+pnpm-lock.yaml
