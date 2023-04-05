@@ -1,18 +1,21 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
+import { useStore } from './context';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const {
+    rootStore: { userStore }
+  } = useStore();
   React.useEffect(() => {
-    console.log(22);
+    console.log(userStore.name);
   }, []);
   return (
     <div className='App'>
       <header className='App-header'>
         <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+        <p onClick={() => userStore.changeName()}>{userStore.name}</p>
         <a
           className='App-link'
           href='https://reactjs.org'
@@ -26,4 +29,4 @@ function App() {
   );
 }
 
-export default App;
+export default observer(App);
