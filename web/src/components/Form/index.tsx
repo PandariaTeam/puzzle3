@@ -17,9 +17,11 @@ import {
   ProFormList,
   ProFormSelect,
   ProFormSwitch,
-  ProFormText
+  ProFormText,
+  ProFormRadio
 } from '@ant-design/pro-components';
 import { useState } from 'react';
+import { labelCls } from './style';
 
 const IconMap: any = {
   PlusOutlined,
@@ -48,14 +50,18 @@ const initialValue = {
     position: 'button',
     type: 'dashed',
     icon: 'PlusOutlined'
-  }
+  },
+  label: 'Hello Web3'
+  // puzzleInstanceProps: {
+  //   text: 'Hello Web3'
+  // }
 };
 const PuzzleForm = () => {
   const [stateValue, setStateValue] = useState({});
   const [json, setJson] = useState(() => JSON.stringify(initialValue));
   return (
     <ProCard bordered split='vertical' headerBordered>
-      <ProCard colSpan='400px' title='配置菜单'>
+      <ProCard colSpan='400px' title='工具栏'>
         <ProForm
           submitter={false}
           initialValues={initialValue}
@@ -89,9 +95,22 @@ const PuzzleForm = () => {
               const Icon = IconMap[values?.creatorButtonProps?.icon];
               values.creatorButtonProps.icon = <Icon />;
             }
+            console.log('values', values);
             setStateValue(values);
           }}
         >
+          <ProForm.Group title='Puzzle标题配置'>
+            <ProFormDependency name={['label']}>
+              {() => {
+                // if (!label.text) return null;
+                return (
+                  <ProForm.Group size={8}>
+                    <ProFormText width='sm' name={['label']} />
+                  </ProForm.Group>
+                );
+              }}
+            </ProFormDependency>
+          </ProForm.Group>
           <ProForm.Group
             title='新建按钮配置'
             extra={
@@ -106,9 +125,7 @@ const PuzzleForm = () => {
           >
             <ProFormDependency name={['creatorButtonProps']}>
               {({ creatorButtonProps }) => {
-                if (!creatorButtonProps.show) {
-                  return null;
-                }
+                if (!creatorButtonProps.show) return null;
                 return (
                   <ProForm.Group size={8}>
                     <ProFormText
@@ -168,7 +185,6 @@ const PuzzleForm = () => {
               }}
             </ProFormDependency>
           </ProForm.Group>
-
           <ProForm.Group
             title='复制按钮配置'
             extra={
@@ -263,11 +279,26 @@ const PuzzleForm = () => {
           />
         </ProForm>
       </ProCard>
-      <ProCard colSpan='calc(100% - 400px)' title='Puzzle 表单'>
+      <ProCard colSpan='calc(100% - 400px)' title='Puzzle表单'>
         <ProForm>
           <ProFormList
+            itemRender={({ listDom, action }, { index }) => (
+              <ProCard
+                bordered
+                style={{ marginBlockEnd: 8 }}
+                title={`规格${index + 1}`}
+                extra={action}
+                bodyStyle={{ paddingBlockEnd: 0 }}
+              >
+                {listDom}
+              </ProCard>
+            )}
             name='users'
-            label='用户信息'
+            label={
+              <p className={labelCls}>
+                {(stateValue as any)?.label ?? 'Hello Web3'}
+              </p>
+            }
             initialValue={[
               {
                 name: '1111'
@@ -279,8 +310,24 @@ const PuzzleForm = () => {
             {...stateValue}
           >
             <ProForm.Group key='group' size={8}>
-              <ProFormText name='name' label='姓名' />
-              <ProFormText name='nickName' label='姓名' />
+              <ProFormRadio.Group
+                name='radio'
+                label='选择题'
+                options={[
+                  {
+                    label: 'item 1',
+                    value: 'a'
+                  },
+                  {
+                    label: 'item 2',
+                    value: 'b'
+                  },
+                  {
+                    label: 'item 3',
+                    value: 'c'
+                  }
+                ]}
+              />
             </ProForm.Group>
           </ProFormList>
         </ProForm>
