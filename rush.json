@@ -389,8 +389,8 @@
       "projectFolder": "tools/prettier-config"
     },
     {
-      "packageName": "@rush-monorepo/cra-app",
-      "projectFolder": "apps/cra-app"
+      "packageName": "@puzzle3/web",
+      "projectFolder": "apps/web"
     },
     {
       "packageName": "@rush-monorepo/vite-app",

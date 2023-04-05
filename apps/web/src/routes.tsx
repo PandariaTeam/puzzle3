@@ -1,6 +1,7 @@
-import { set } from 'lodash-es';
 import { ComponentType, lazy, Suspense } from 'react';
 import { RouteObject, useRoutes } from 'react-router-dom';
+
+import { set } from 'lodash-es';
 
 export function PageRoutes() {
   const routeConfig = generateRouteConfig();
