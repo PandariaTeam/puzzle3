@@ -1,7 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "dev": "pnpm run /^dev:.*/",
     "build": "pnpm run /^build:.*/",
     "dev:web": "pnpm --filter \"@puzzle3/web\" dev",
     "dev:contracts": "pnpm --filter \"@puzzle3/contracts\" dev",
