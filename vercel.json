@@ -1,9 +1,9 @@
 {
   "installCommand": "pnpm install",
-  "devCommand": "pnpm run /^dev:.*/",
-  "buildCommand": "pnpm run /^build:.*/",
+  "devCommand": "pnpm run dev:web",
+  "buildCommand": "pnpm run build:web",
   "framework": null,
-  "outputDirectory": "apps/web/build",
+  "outputDirectory": "web/build",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
