@@ -21,8 +21,10 @@ export const createRoute = <Res = any>(
             { status: 200 }
           );
 
-    response.headers.set('access-control-allow-origin', '*');
-    response.headers.set('access-control-allow-methods', '*');
+    response.headers.set('Access-Control-Allow-Origin', '*');
+    response.headers.set('Access-Control-Allow-Methods', '*');
+    response.headers.set('Access-Control-Allow-Headers', '*');
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
     return response;
   };
 

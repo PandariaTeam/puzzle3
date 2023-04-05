@@ -10,7 +10,7 @@
 import { Router } from 'itty-router';
 import { Context } from './context';
 import getMetadataRoute from './routes/get_metadata';
-import putMetadataRoute from './routes/put_metadata';
+import postMetadataRoute from './routes/post_metadata';
 
 const router = Router();
 
@@ -33,9 +33,21 @@ export default {
       return errorResponse;
     };
 
-    // 页面响应
-    router.get('/api/metadata/:puzzleId', getMetadataRoute);
-    router.put('/api/metadata', putMetadataRoute);
+    router
+      .options(
+        '*',
+        () =>
+          new Response(null, {
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': '*',
+              'Access-Control-Allow-Headers': '*',
+              'Access-Control-Allow-Credentials': 'true'
+            }
+          })
+      )
+      .get('/api/metadata/:puzzleId', getMetadataRoute)
+      .post('/api/metadata', postMetadataRoute);
 
     router.all('*', () => new Response('404 Not Found', { status: 404 }));
 
