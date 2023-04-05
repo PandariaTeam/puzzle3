@@ -20,6 +20,9 @@ export const createRoute = <Res = any>(
             { success: true, data: result, message: null },
             { status: 200 }
           );
+
+    response.headers.set('access-control-allow-origin', '*');
+    response.headers.set('access-control-allow-methods', '*');
     return response;
   };
 
