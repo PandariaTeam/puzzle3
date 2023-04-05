@@ -1,4 +1,4 @@
-import type { RouteHandler } from 'itty-router';
+import type { IRequest, RouteHandler } from 'itty-router';
 import { Context } from '../context';
 
 // export type Handler = (request: Request) => Promise<Response>;
@@ -7,7 +7,11 @@ import { Context } from '../context';
 export const createRoute = <Res = any>(
   handler: (ctx: Context) => Promise<Response | Res>
 ) => {
-  const routeHandler = async (_request: Request, ctx: Context) => {
+  const routeHandler: RouteHandler = async (
+    _request: IRequest,
+    ctx: Context
+  ) => {
+    ctx.irequest = _request;
     const result = await handler(ctx);
     const response =
       result instanceof Response
@@ -19,5 +23,5 @@ export const createRoute = <Res = any>(
     return response;
   };
 
-  return routeHandler as unknown as RouteHandler;
+  return routeHandler;
 };

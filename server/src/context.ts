@@ -1,3 +1,4 @@
+import { IRequest } from 'itty-router';
 import { assert } from './utils';
 
 /**
@@ -9,6 +10,10 @@ export class Context implements Record<PropertyKey, any> {
    */
   public readonly request!: Request;
   /**
+   * iity-router 请求对象
+   */
+  public irequest!: IRequest;
+  /**
    * 响应对象
    */
   public response?: Response;
@@ -18,17 +23,9 @@ export class Context implements Record<PropertyKey, any> {
 
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
   /**
-   * KV: mapping(`secretKey:messageId` => IChatMessage)
+   * KV: mapping(`puzzleId` => IPuzzle3Metadata)
    */
-  public chatgpt_messages_kv!: KVNamespace;
-  /**
-   * KV: mapping(secretKey => tokenBalance)
-   */
-  public chatgpt_accounts_kv!: KVNamespace;
-  /**
-   * KV: mapping(`secretKey:conversationId` => messageId)
-   */
-  public chatgpt_conversations_kv!: KVNamespace;
+  public puzzle3_metadata_kv!: KVNamespace;
 
   // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
   // MY_DURABLE_OBJECT: DurableObjectNamespace;
