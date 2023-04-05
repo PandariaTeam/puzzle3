@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Button } from 'antd';
 import { useStore } from '@/context';
+import PuzzleForm from '@/components/Form';
+import { userCls } from './style';
 
 function User() {
   const {
@@ -15,9 +17,10 @@ function User() {
   }, []);
   const onSubmit = () => userStore.create();
   return (
-    <div>
+    <div className={userCls}>
+      <PuzzleForm />
       <p onClick={() => userStore.changeName()}>{userStore.name}</p>
-      <Button onClick={onSubmit}>提交</Button>
+      <Button onClick={onSubmit}>测试</Button>
     </div>
   );
 }

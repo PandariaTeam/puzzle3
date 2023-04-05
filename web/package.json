@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@ant-design/pro-components": "^2.4.4",
     "@emotion/css": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@puzzle3/types": "workspace:*",
