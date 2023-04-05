@@ -1,4 +1,4 @@
-import logo from '../../logo.svg';
+import logo from '@/logo.svg';
 import { headerCls } from './style';
 
 function Header() {
