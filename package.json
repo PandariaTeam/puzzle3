@@ -1,0 +1,26 @@
+{
+  "name": "puzzle3",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "rush update && rush build",
+    "dev:web": "cd apps/web && rushx start",
+    "build:web": "cd apps/web && rushx build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PandariaTeam/puzzle3.git"
+  },
+  "keywords": [],
+  "author": "Pandaria Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PandariaTeam/puzzle3/issues"
+  },
+  "homepage": "https://github.com/PandariaTeam/puzzle3#readme",
+  "devDependencies": {
+    "@microsoft/rush": "^5.96.0"
+  }
+}

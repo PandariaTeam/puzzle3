@@ -19,20 +19,10 @@
 
 ## Quick Start
 
+If using `nvm`, run `nvm use` before all.
+
 ```shell
-npm i @microsoft/rush pnpm -g
-
-git clone git@github.com:PandariaTeam/puzzle3.git
-
-cd puzzle3
-
-rush update
-
-# build dependencies of our app at first
-rush build -T @puzzle3/web
-
-cd apps/web
-
-# start app
-rushx start # or npm start
+$ npm i/pnpm i
+$ npm run dev:web
+$ npm run build:web
 ```
