@@ -1,5 +1,7 @@
 // @ts-ignore
 import CracoAlias from 'craco-alias';
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config: any = {
   plugins: [
@@ -16,6 +18,7 @@ const config: any = {
     configure: (webpackConfig: any) => {
       // add this line
       webpackConfig.output.libraryTarget = 'umd';
+      // webpackConfig.plugins.push(new BundleAnalyzerPlugin());
       webpackConfig.externals = {
         react: {
           root: 'React',
