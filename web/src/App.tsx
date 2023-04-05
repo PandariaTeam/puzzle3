@@ -1,30 +1,22 @@
-import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { useStore } from './context';
-import logo from './logo.svg';
+import Header from './components/Header';
+import Home from './pages/home';
+import User from './pages/user';
+import Creater from './pages/creater';
 import './App.css';
 
 function App() {
-  const {
-    rootStore: { userStore }
-  } = useStore();
-  React.useEffect(() => {
-    console.log(userStore.name);
-  }, []);
   return (
     <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p onClick={() => userStore.changeName()}>{userStore.name}</p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/user' element={<User />} />
+          <Route path='/creater' element={<Creater />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
