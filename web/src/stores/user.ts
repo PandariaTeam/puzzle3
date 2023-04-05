@@ -41,10 +41,10 @@ export class UserStore {
       console.log('err', error);
     }
   });
-  getInfo = flow(function* (this: UserStore) {
+  getInfo = flow(function* (this: UserStore, id: string) {
     try {
       // yield instead of await.
-      const res = yield getMetaDataById('ce580971-dfdc-4423-b108-7159a50dc194');
+      const res = yield getMetaDataById(id);
       console.log('res', res);
     } catch (error) {
       console.log('err', error);

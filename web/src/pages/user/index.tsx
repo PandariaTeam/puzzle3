@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
 
@@ -6,8 +7,10 @@ function User() {
   const {
     rootStore: { userStore }
   } = useStore();
+  const { id } = useParams();
   useEffect(() => {
-    userStore.getInfo();
+    if (!id) return;
+    userStore.getInfo(id);
   }, []);
   const onSubmit = () => userStore.create();
   return (
