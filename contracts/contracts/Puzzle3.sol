@@ -2,34 +2,60 @@
 pragma solidity ^0.8.18;
 
 import '@openzeppelin/contracts/access/Ownable.sol';
-import './IPuzzle.sol';
+import './APuzzle.sol';
 
 contract Puzzle3 is Ownable {
   // #region state variables
 
-  // A mapping of registered puzzles address to creator address
-  // mapping(puzzle_address => creator_address)
-  mapping(address => address) public puzzles;
+  // Struct of Puzzle Factory
+  struct PuzzleFactory {
+    address puzzleAddress;
+    // Puzzle creator address
+    address creator;
+    // Puzzle is available
+    bool available;
+    // Block time of puzzle registered
+    uint256 registerAt;
+    // Created instance count
+    uint256 instanceCreatedCount;
+    // Solved instance count
+    uint256 instanceSolvedCount;
+  }
 
-  // Mapping from puzzle address to puzzle available
-  // mapping(puzzle_address => bool);
-  mapping(address => bool) public puzzlesAvailable;
+  // Mapping from puzzle address to puzzle data
+  mapping(address => PuzzleFactory) public puzzles;
+
+  // creator_address => puzzle_address[]
+  mapping(address => address[]) internal creatorOwnedPuzzles;
 
   struct PuzzleInstance {
+    address instanceAddress;
+    // Instance solver address
     address solver;
-    IPuzzle puzzle;
+    // Block time of puzzle instance created
+    uint256 createdAt;
+    // Block time of puzzle instance completed
+    uint256 completedAt;
+    // Puzzle address of current instance
+    APuzzle puzzle;
+    // Is completed
     bool completed;
   }
 
   // Mapping from puzzle instance address to puzzle instance data
   mapping(address => PuzzleInstance) public instances;
+  // puzzle_address => instance_address[]
+  mapping(address => address[]) internal puzzleOwnedInstances;
+  // solver_address => (puzzle_address => instance_address[])
+  mapping(address => mapping(address => address[]))
+    internal solverCreatedPuzzleInstances;
 
   // #endregion
 
   // #region events
 
   // Puzzle register event
-  event PuzzleRegister(address indexed creator, address indexed puzzle);
+  event PuzzleRegister(address indexed creator, address indexed puzzleAddress);
   // Puzzle available change event
   event PuzzleAvailableChange(address indexed puzzleAddress, bool available);
   // Puzzle instance create event
@@ -39,10 +65,11 @@ contract Puzzle3 is Ownable {
     address indexed puzzleAddress
   );
   // Puzzle instance completed event
-  event PuzzleInstanceCompleted(
+  event PuzzleInstanceSubmit(
     address indexed solver,
     address indexed instanceAddress,
-    address indexed puzzleAddress
+    address indexed puzzleAddress,
+    bool completed
   );
 
   // #endregion
@@ -51,12 +78,12 @@ contract Puzzle3 is Ownable {
 
   // Puzzle has been registered
   error PuzzleHasBeenRegistered(address puzzleAddress, address creator);
-  // Puzzle not owned
-  error PuzzleNotOwned(address puzzleAddress);
-  // Puzzle not exists
-  error PuzzleNotExists(address puzzleAddress);
-  // Puzzle instance not exists
-  error PuzzleInstanceNotExists(address instanceAddress);
+  // Puzzle is invalid
+  error PuzzleInvalid(address puzzleAddress, address creator);
+  // Puzzle not exists/owned
+  error PuzzleNotExistsOrOwned(address puzzleAddress);
+  // Puzzle instance not exists/owned
+  error PuzzleInstanceNotExistsOrOwned(address instanceAddress);
   // Puzzle instance has been completed
   error PuzzleInstanceHasBeenCompleted(address instanceAddress);
 
@@ -66,19 +93,33 @@ contract Puzzle3 is Ownable {
    * Only registered puzzle will be allowed to generate and validate instances.
    * @param _puzzle The address of the puzzle
    */
-  function registerPuzzle(IPuzzle _puzzle) external {
+  function registerPuzzle(APuzzle _puzzle) external {
     address creator = _msgSender();
-    address puzzle = address(_puzzle);
+    address puzzleAddress = address(_puzzle);
 
-    // Check if the puzzle has been registered
-    if (puzzles[puzzle] != address(0)) {
-      revert PuzzleHasBeenRegistered(puzzle, puzzles[puzzle]);
+    if (_puzzle.puzzle3() != address(this)) {
+      revert PuzzleInvalid(puzzleAddress, creator);
     }
 
-    puzzles[puzzle] = creator;
-    puzzlesAvailable[puzzle] = true;
+    // Check if the puzzle has been registered
+    if (puzzles[puzzleAddress].creator != address(0)) {
+      revert PuzzleHasBeenRegistered(
+        puzzleAddress,
+        puzzles[puzzleAddress].creator
+      );
+    }
 
-    emit PuzzleRegister(creator, puzzle);
+    puzzles[puzzleAddress] = PuzzleFactory({
+      puzzleAddress: puzzleAddress,
+      creator: creator,
+      available: true,
+      registerAt: block.timestamp,
+      instanceCreatedCount: 0,
+      instanceSolvedCount: 0
+    });
+    creatorOwnedPuzzles[creator].push(puzzleAddress);
+
+    emit PuzzleRegister(creator, puzzleAddress);
     // TODO: statistics.saveNewLevel(address(_puzzle));
   }
 
@@ -87,68 +128,130 @@ contract Puzzle3 is Ownable {
    * @param _puzzle The address of the puzzle
    * @param available The available status
    */
-  function changePuzzleAvailable(IPuzzle _puzzle, bool available) external {
+  function changePuzzleAvailable(APuzzle _puzzle, bool available) external {
     address sender = _msgSender();
-    address puzzle = address(_puzzle);
-    if (puzzles[puzzle] == address(0)) {
-      revert PuzzleNotExists(puzzle);
+    address puzzleAddress = address(_puzzle);
+    if (sender != owner() && puzzles[puzzleAddress].creator != sender) {
+      revert PuzzleNotExistsOrOwned(puzzleAddress);
     }
-    if (puzzles[puzzle] != sender) {
-      revert PuzzleNotOwned(puzzle);
-    }
-    puzzlesAvailable[puzzle] = available;
-    emit PuzzleAvailableChange(puzzle, available);
+    puzzles[puzzleAddress].available = available;
+    emit PuzzleAvailableChange(puzzleAddress, available);
   }
 
   /**
    * Create a new puzzle instance.
    */
-  function createPuzzleInstance(IPuzzle _puzzle) public payable {
-    address puzzle = address(_puzzle);
+  function createPuzzleInstance(APuzzle _puzzle) public payable {
     address solver = _msgSender();
+    address puzzleAddress = address(_puzzle);
 
-    // Ensure puzzle exists.
-    if (puzzlesAvailable[puzzle] != true) {
-      revert PuzzleNotExists(puzzle);
+    // Ensure puzzle exists and available
+    if (puzzles[puzzleAddress].available != true) {
+      revert PuzzleNotExistsOrOwned(puzzleAddress);
     }
 
     // Get puzzle to create an instance.
-    address instance = _puzzle.createInstance{ value: msg.value }(solver);
+    address instanceAddress = _puzzle.createInstance{ value: msg.value }(
+      solver
+    );
 
     // Store instance relationship with solver and puzzle.
-    instances[instance] = PuzzleInstance(solver, _puzzle, false);
+    instances[instanceAddress] = PuzzleInstance({
+      instanceAddress: instanceAddress,
+      solver: solver,
+      createdAt: block.timestamp,
+      completedAt: 0,
+      puzzle: _puzzle,
+      completed: false
+    });
+    solverCreatedPuzzleInstances[solver][puzzleAddress].push(instanceAddress);
+    puzzles[puzzleAddress].instanceCreatedCount += 1;
+    puzzleOwnedInstances[puzzleAddress].push(instanceAddress);
 
-    // statistics.createNewInstance(instance, address(_level), msg.sender);
+    // TOOD: statistics.createNewInstance(instance, address(_level), msg.sender);
 
     // Retrieve created instance via logs.
-    emit PuzzleInstanceCreate(solver, instance, puzzle);
+    emit PuzzleInstanceCreate(solver, instanceAddress, puzzleAddress);
   }
 
   /**
    * Submit a puzzle instance.
    */
   function submitPuzzleInstance(address payable _instance) public {
+    address solver = _msgSender();
     // Get solver and puzzle.
     PuzzleInstance storage instance = instances[_instance];
-    address sender = _msgSender();
 
-    if (instance.solver != sender) {
-      revert PuzzleInstanceNotExists(_instance);
+    if (instance.solver != solver) {
+      revert PuzzleInstanceNotExistsOrOwned(_instance);
     }
     if (instance.completed == true) {
       revert PuzzleInstanceHasBeenCompleted(_instance);
     }
 
-    // Have the level check the instance.
-    if (instance.puzzle.validateInstance(_instance, sender)) {
+    // Have the puzzle check the instance.
+    if (instance.puzzle.validateInstance(_instance, solver)) {
       // Register instance as completed.
       instance.completed = true;
+      instance.completedAt = block.timestamp;
+      instance.puzzle.mint(solver);
+      puzzles[address(instance.puzzle)].instanceSolvedCount += 1;
 
       // statistics.submitSuccess(_instance, address(data.level), msg.sender);
       // Notify success via logs.
-      emit PuzzleInstanceCompleted(sender, _instance, address(instance.puzzle));
+      emit PuzzleInstanceSubmit(
+        solver,
+        _instance,
+        address(instance.puzzle),
+        true
+      );
     } else {
+      emit PuzzleInstanceSubmit(
+        solver,
+        _instance,
+        address(instance.puzzle),
+        false
+      );
       // statistics.submitFailure(_instance, address(data.level), msg.sender);
     }
+  }
+
+  // Get puzzles by creator address
+  function getPuzzlesByCreator(
+    address _creator
+  ) public view returns (PuzzleFactory[] memory) {
+    address[] memory createdPuzzleAddressList = creatorOwnedPuzzles[_creator];
+    PuzzleFactory[] memory createdPuzzles = new PuzzleFactory[](
+      createdPuzzleAddressList.length
+    );
+    if (createdPuzzleAddressList.length <= 0) {
+      return createdPuzzles;
+    }
+    for (uint i = 0; i < createdPuzzleAddressList.length; i += 1) {
+      createdPuzzles[i] = puzzles[createdPuzzleAddressList[i]];
+    }
+    return createdPuzzles;
+  }
+
+  // Get puzzle instances by puzzle address
+  function getPuzzleInstancesByPuzzleAddress(
+    address _puzzleAddress
+  ) public view returns (PuzzleInstance[] memory) {
+    if (puzzles[_puzzleAddress].creator == address(0)) {
+      revert PuzzleNotExistsOrOwned(_puzzleAddress);
+    }
+    address[] memory createdPuzzleInstanceAddressList = puzzleOwnedInstances[
+      _puzzleAddress
+    ];
+
+    PuzzleInstance[] memory createdInstances = new PuzzleInstance[](
+      createdPuzzleInstanceAddressList.length
+    );
+
+    for (uint i = 0; i < createdPuzzleInstanceAddressList.length; i += 1) {
+      createdInstances[i] = instances[createdPuzzleInstanceAddressList[i]];
+    }
+
+    return createdInstances;
   }
 }

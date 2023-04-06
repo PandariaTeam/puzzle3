@@ -9,6 +9,10 @@ const config: HardhatUserConfig = {
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [ACCOUNT_PRIVATE_KEY],
     },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_API_KEY}`,
+      accounts: [ACCOUNT_PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,

@@ -21,6 +21,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721__factory>;
     getContractFactory(
+      name: "ERC721URIStorage",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721URIStorage__factory>;
+    getContractFactory(
       name: "IERC721Metadata",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC721Metadata__factory>;
@@ -41,13 +45,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "Lock",
+      name: "APuzzle",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
+    ): Promise<Contracts.APuzzle__factory>;
+    getContractFactory(
+      name: "IPuzzle",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPuzzle__factory>;
     getContractFactory(
       name: "Puzzle3",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Puzzle3__factory>;
+    getContractFactory(
+      name: "Instance",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Instance__factory>;
     getContractFactory(
       name: "Puzzle",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -63,6 +75,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721>;
+    getContractAt(
+      name: "ERC721URIStorage",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721URIStorage>;
     getContractAt(
       name: "IERC721Metadata",
       address: string,
@@ -89,15 +106,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "Lock",
+      name: "APuzzle",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
+    ): Promise<Contracts.APuzzle>;
+    getContractAt(
+      name: "IPuzzle",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPuzzle>;
     getContractAt(
       name: "Puzzle3",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Puzzle3>;
+    getContractAt(
+      name: "Instance",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Instance>;
     getContractAt(
       name: "Puzzle",
       address: string,
