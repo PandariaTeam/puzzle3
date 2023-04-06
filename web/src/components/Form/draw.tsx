@@ -9,7 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
-import { IssueType, EditSchema, Exam, initEditSchema } from '@/stores/domain';
+import { IssueType, EditSchema, Exam } from '@/stores/domain';
 import { Form, message } from 'antd';
 
 const waitTime = (time: number = 100) => {
@@ -39,7 +39,7 @@ export const PuzzleDrawer = observer(() => {
       title='编辑题目'
       form={form}
       width={400}
-      initialValues={initEditSchema}
+      initialValues={formStore.editSchema[formStore.currentIndex]}
       autoFocusFirstInput
       drawerProps={{
         destroyOnClose: true,

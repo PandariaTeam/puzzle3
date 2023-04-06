@@ -1,10 +1,10 @@
 import { makeAutoObservable } from 'mobx';
-import { EditSchema } from './domain';
+import { EditSchema, initEditSchema } from './domain';
 
 export class FormStore {
   preview = false;
   drawerVisible = false;
-  editSchema: EditSchema[] = [];
+  editSchema: EditSchema[] = [initEditSchema];
   viewSchema = [];
   currentIndex = 0;
 
@@ -17,6 +17,14 @@ export class FormStore {
   }
   updateIndex(index: number) {
     this.currentIndex = index;
+  }
+  addItem() {
+    this.editSchema = this.editSchema.concat(initEditSchema);
+    // this.editSchema.push(initEditSchema);
+    // console.log('this', this.editSchema);
+  }
+  removeItem(index: number) {
+    this.editSchema = this.editSchema.splice(index, 1);
   }
   updateEditSchema(schema: EditSchema) {
     const { editSchema, currentIndex } = this;

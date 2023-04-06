@@ -20,13 +20,14 @@ import {
   ProFormSwitch,
   ProFormText,
   ProFormRadio,
-  ProFormCheckbox
+  ProFormCheckbox,
+  FormListActionType
 } from '@ant-design/pro-components';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
-import { initEditSchema, Exam } from '@/stores/domain';
+import { Exam } from '@/stores/domain';
 import { PuzzleDrawer } from './draw';
 import { labelCls, titleCls } from './style';
 
@@ -71,7 +72,26 @@ const PuzzleForm = () => {
     formStore.changeVisible();
     formStore.updateIndex(index);
   };
-  console.log('s', toJS(formStore.editSchema));
+  const actionRef = useRef<
+    FormListActionType<{
+      name: string;
+    }>
+  >();
+  const actionGuard = {
+    beforeAddRow: async (
+      defaultValue: string,
+      insertIndex: number,
+      count: number
+    ) => {
+      console.log('amen', defaultValue, insertIndex, count);
+      formStore.addItem();
+      actionRef.current?.add();
+    },
+    beforeRemoveRow: async (index: number) => {
+      actionRef.current?.remove(1);
+      formStore.removeItem(index);
+    }
+  };
   return (
     <>
       <ProCard bordered split='vertical' headerBordered>
@@ -298,12 +318,22 @@ const PuzzleForm = () => {
           <ProForm
             form={form}
             onValuesChange={(val) =>
-              console.log('ss', val, form.getFieldsValue())
+              console.log(
+                'ss',
+                val,
+                form.getFieldsValue(),
+                toJS(formStore.editSchema)
+              )
             }
           >
             <ProFormList
+              actionGuard={actionGuard as any}
+              actionRef={actionRef}
               itemRender={({ action }, listMeta) => {
-                const { record } = listMeta;
+                // const { record } = listMeta;
+                const record = formStore.editSchema[listMeta.index];
+                console.log('listMeta', listMeta, record);
+                // console.log('s', toJS(formStore.editSchema));
                 const options = record.examinations.map((item: Exam) => {
                   return { label: item.option, value: item.option };
                 });
@@ -348,8 +378,7 @@ const PuzzleForm = () => {
                   {(stateValue as any)?.label ?? 'Hello Web3'}
                 </p>
               }
-              // initialValue={formStore.editSchema}
-              initialValue={[initEditSchema]}
+              initialValue={formStore.editSchema}
               creatorButtonProps={{
                 position: 'bottom'
               }}
