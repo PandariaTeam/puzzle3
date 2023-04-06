@@ -7,7 +7,8 @@ import {
   PlusOutlined,
   SettingFilled,
   SmileOutlined,
-  SyncOutlined
+  SyncOutlined,
+  EditOutlined
 } from '@ant-design/icons';
 import {
   ProCard,
@@ -22,8 +23,10 @@ import {
   ProFormCheckbox
 } from '@ant-design/pro-components';
 import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '@/context';
 import { PuzzleDrawer } from './draw';
-import { labelCls } from './style';
+import { labelCls, titleCls } from './style';
 
 const IconMap: any = {
   PlusOutlined,
@@ -62,6 +65,12 @@ const PuzzleForm = () => {
   const [stateValue, setStateValue] = useState({});
   const [json, setJson] = useState(() => JSON.stringify(initialValue));
   const [form] = ProForm.useForm();
+  const {
+    rootStore: { formStore }
+  } = useStore();
+  const openEditForm = () => {
+    formStore.changeVisible();
+  };
   return (
     <>
       <ProCard bordered split='vertical' headerBordered>
@@ -290,12 +299,18 @@ const PuzzleForm = () => {
             onValuesChange={(val) => console.log('ss', form.getFieldsValue())}
           >
             <ProFormList
-              // actionRender={() => [<>编辑</>]}
               itemRender={({ listDom, action }, listMeta) => (
                 <ProCard
                   bordered
                   style={{ marginBlockEnd: 8 }}
-                  title={<h2>{`第${listMeta.index + 1}题`}</h2>}
+                  title={
+                    <div className={titleCls} onClick={openEditForm}>
+                      <span className={`${titleCls}-text`}>{`第${
+                        listMeta.index + 1
+                      }题`}</span>
+                      <EditOutlined />
+                    </div>
+                  }
                   extra={action}
                   bodyStyle={{ paddingBlockEnd: 0 }}
                 >
@@ -365,4 +380,4 @@ const PuzzleForm = () => {
   );
 };
 
-export default PuzzleForm;
+export default observer(PuzzleForm);
