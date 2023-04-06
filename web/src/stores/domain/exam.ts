@@ -15,6 +15,6 @@ export interface EditSchema {
 export const initEditSchema: EditSchema = {
   name: '测试题目',
   type: IssueType.Single,
-  examinations: [{ option: '111' }],
+  examinations: [{ option: '111' }, { option: '222' }, { option: '333' }],
   answer: '111'
 };

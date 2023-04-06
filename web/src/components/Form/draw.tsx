@@ -34,7 +34,7 @@ export const PuzzleDrawer = observer(() => {
     if (val?.examinations) form.setFieldValue('answer', undefined);
   };
   return (
-    <DrawerForm<FormData>
+    <DrawerForm<EditSchema>
       open={formStore.drawerVisible}
       title='编辑题目'
       form={form}
@@ -49,7 +49,13 @@ export const PuzzleDrawer = observer(() => {
       submitTimeout={2000}
       onFinish={async (values) => {
         await waitTime(200);
-        console.log(values);
+        formStore.updateEditSchema({
+          ...values,
+          answer:
+            values.type === IssueType.Single
+              ? values.answer
+              : (values.answer as any).join(',')
+        });
         message.success('提交成功');
         formStore.changeVisible();
       }}

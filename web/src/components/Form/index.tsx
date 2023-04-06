@@ -24,7 +24,9 @@ import {
 } from '@ant-design/pro-components';
 import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { toJS } from 'mobx';
 import { useStore } from '@/context';
+import { initEditSchema, Exam } from '@/stores/domain';
 import { PuzzleDrawer } from './draw';
 import { labelCls, titleCls } from './style';
 
@@ -65,9 +67,11 @@ const PuzzleForm = () => {
   const {
     rootStore: { formStore }
   } = useStore();
-  const openEditForm = () => {
+  const openEditForm = (index: number) => {
     formStore.changeVisible();
+    formStore.updateIndex(index);
   };
+  console.log('s', toJS(formStore.editSchema));
   return (
     <>
       <ProCard bordered split='vertical' headerBordered>
@@ -299,17 +303,19 @@ const PuzzleForm = () => {
           >
             <ProFormList
               itemRender={({ action }, listMeta) => {
-                console.log('listMeta', listMeta);
                 const { record } = listMeta;
-                const options = record.examinations.map((item: any) => {
-                  return { label: item.exam, value: item.exam };
+                const options = record.examinations.map((item: Exam) => {
+                  return { label: item.option, value: item.option };
                 });
                 return (
                   <ProCard
                     bordered
                     style={{ marginBlockEnd: 8 }}
                     title={
-                      <div className={titleCls} onClick={openEditForm}>
+                      <div
+                        className={titleCls}
+                        onClick={() => openEditForm(listMeta.index)}
+                      >
                         <span className={`${titleCls}-text`}>{`第${
                           listMeta.index + 1
                         }题`}</span>
@@ -321,13 +327,13 @@ const PuzzleForm = () => {
                   >
                     {record.type === 0 ? (
                       <ProFormRadio.Group
-                        name='radio'
+                        name='option'
                         label={record.name}
                         options={options}
                       />
                     ) : (
                       <ProFormCheckbox.Group
-                        name='checkbox'
+                        name='option'
                         layout='horizontal'
                         label={record.name}
                         options={options}
@@ -342,13 +348,8 @@ const PuzzleForm = () => {
                   {(stateValue as any)?.label ?? 'Hello Web3'}
                 </p>
               }
-              initialValue={[
-                {
-                  name: '测试题目',
-                  examinations: [{ exam: '1' }, { exam: '2' }],
-                  type: 1
-                }
-              ]}
+              // initialValue={formStore.editSchema}
+              initialValue={[initEditSchema]}
               creatorButtonProps={{
                 position: 'bottom'
               }}
