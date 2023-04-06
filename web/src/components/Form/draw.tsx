@@ -9,6 +9,7 @@ import {
 } from '@ant-design/pro-components';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
+import { IssueType, EditSchema, Exam, initEditSchema } from '@/stores/domain';
 import { Form, message } from 'antd';
 
 const waitTime = (time: number = 100) => {
@@ -19,32 +20,13 @@ const waitTime = (time: number = 100) => {
   });
 };
 
-enum PuzzleType {
-  Single = 0,
-  Multiple = 1
-}
-interface Exam {
-  exam: string;
-}
-interface FormData {
-  name: string;
-  type: PuzzleType;
-  examinations: Exam[];
-  answer: string | string[];
-}
-const initForm: FormData = {
-  name: '测试题目',
-  type: PuzzleType.Single,
-  examinations: [{ exam: '111' }],
-  answer: '111'
-};
 export const PuzzleDrawer = observer(() => {
-  const [form] = Form.useForm<FormData>();
-  const [examType, setType] = useState<PuzzleType>(PuzzleType.Single);
+  const [form] = Form.useForm<EditSchema>();
+  const [examType, setType] = useState<IssueType>(IssueType.Single);
   const {
     rootStore: { formStore }
   } = useStore();
-  const handleValueChange = (val: Partial<FormData>) => {
+  const handleValueChange = (val: Partial<EditSchema>) => {
     if (val?.type) {
       setType(val?.type);
       form.setFieldValue('answer', undefined);
@@ -57,7 +39,7 @@ export const PuzzleDrawer = observer(() => {
       title='编辑题目'
       form={form}
       width={400}
-      initialValues={initForm}
+      initialValues={initEditSchema}
       autoFocusFirstInput
       drawerProps={{
         destroyOnClose: true,
@@ -69,8 +51,7 @@ export const PuzzleDrawer = observer(() => {
         await waitTime(200);
         console.log(values);
         message.success('提交成功');
-        // 不返回不会关闭弹框
-        return true;
+        formStore.changeVisible();
       }}
     >
       <ProFormTextArea
@@ -94,21 +75,21 @@ export const PuzzleDrawer = observer(() => {
         options={[
           {
             label: '单选',
-            value: PuzzleType.Single
+            value: IssueType.Single
           },
           {
             label: '多选',
-            value: PuzzleType.Multiple
+            value: IssueType.Multiple
           }
         ]}
       />
-      <ProFormList min={1} name='examinations' label='题目可选项' required>
-        <ProFormText key='useMode' name='exam' />
+      <ProFormList min={3} name='examinations' label='题目可选项' required>
+        <ProFormText key='useMode' name='option' />
       </ProFormList>
       <ProFormSelect
         name='answer'
         label='录入正确答案'
-        mode={examType === PuzzleType.Multiple ? 'multiple' : 'single'}
+        mode={examType === IssueType.Multiple ? 'multiple' : 'single'}
         required
         placeholder='请录入正确答案'
         // dependencies 的内容会注入 request 中
@@ -116,9 +97,9 @@ export const PuzzleDrawer = observer(() => {
         request={async (params) => {
           const { examinations } = params;
           return examinations
-            .filter((item: Exam) => !!item.exam)
+            .filter((item: Exam) => !!item.option)
             .map((item: Exam) => {
-              return { label: item.exam, value: item.exam };
+              return { label: item.option, value: item.option };
             });
         }}
       />

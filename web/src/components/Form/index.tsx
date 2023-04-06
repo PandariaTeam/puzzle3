@@ -57,9 +57,6 @@ const initialValue = {
     icon: 'PlusOutlined'
   },
   label: 'Hello Web3'
-  // puzzleInstanceProps: {
-  //   text: 'Hello Web3'
-  // }
 };
 const PuzzleForm = () => {
   const [stateValue, setStateValue] = useState({});
@@ -296,28 +293,50 @@ const PuzzleForm = () => {
         <ProCard colSpan='calc(100% - 400px)' title='Puzzle表单'>
           <ProForm
             form={form}
-            onValuesChange={(val) => console.log('ss', form.getFieldsValue())}
+            onValuesChange={(val) =>
+              console.log('ss', val, form.getFieldsValue())
+            }
           >
             <ProFormList
-              itemRender={({ listDom, action }, listMeta) => (
-                <ProCard
-                  bordered
-                  style={{ marginBlockEnd: 8 }}
-                  title={
-                    <div className={titleCls} onClick={openEditForm}>
-                      <span className={`${titleCls}-text`}>{`第${
-                        listMeta.index + 1
-                      }题`}</span>
-                      <EditOutlined />
-                    </div>
-                  }
-                  extra={action}
-                  bodyStyle={{ paddingBlockEnd: 0 }}
-                >
-                  {listDom}
-                </ProCard>
-              )}
-              name='users'
+              itemRender={({ action }, listMeta) => {
+                console.log('listMeta', listMeta);
+                const { record } = listMeta;
+                const options = record.examinations.map((item: any) => {
+                  return { label: item.exam, value: item.exam };
+                });
+                return (
+                  <ProCard
+                    bordered
+                    style={{ marginBlockEnd: 8 }}
+                    title={
+                      <div className={titleCls} onClick={openEditForm}>
+                        <span className={`${titleCls}-text`}>{`第${
+                          listMeta.index + 1
+                        }题`}</span>
+                        <EditOutlined />
+                      </div>
+                    }
+                    extra={action}
+                    bodyStyle={{ paddingBlockEnd: 0 }}
+                  >
+                    {record.type === 0 ? (
+                      <ProFormRadio.Group
+                        name='radio'
+                        label={record.name}
+                        options={options}
+                      />
+                    ) : (
+                      <ProFormCheckbox.Group
+                        name='checkbox'
+                        layout='horizontal'
+                        label={record.name}
+                        options={options}
+                      />
+                    )}
+                  </ProCard>
+                );
+              }}
+              name='examinations'
               label={
                 <p className={labelCls}>
                   {(stateValue as any)?.label ?? 'Hello Web3'}
@@ -325,53 +344,16 @@ const PuzzleForm = () => {
               }
               initialValue={[
                 {
-                  radio: 'a',
-                  checkbox: ['b']
+                  name: '测试题目',
+                  examinations: [{ exam: '1' }, { exam: '2' }],
+                  type: 1
                 }
               ]}
               creatorButtonProps={{
                 position: 'bottom'
               }}
               {...stateValue}
-            >
-              <ProFormRadio.Group
-                name='radio'
-                label='选择题'
-                options={[
-                  {
-                    label: 'item 1',
-                    value: 'a'
-                  },
-                  {
-                    label: 'item 2',
-                    value: 'b'
-                  },
-                  {
-                    label: 'item 3',
-                    value: 'c'
-                  }
-                ]}
-              />
-              <ProFormCheckbox.Group
-                name='checkbox'
-                layout='horizontal'
-                label='行业分布（多选）'
-                options={[
-                  {
-                    label: 'item 1',
-                    value: 'a'
-                  },
-                  {
-                    label: 'item 2',
-                    value: 'b'
-                  },
-                  {
-                    label: 'item 3',
-                    value: 'c'
-                  }
-                ]}
-              />
-            </ProFormList>
+            />
           </ProForm>
         </ProCard>
       </ProCard>
