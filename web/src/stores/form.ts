@@ -21,6 +21,12 @@ export class FormStore {
   addItem() {
     this.editSchema = this.editSchema.concat(initEditSchema);
   }
+  copyItem(index: number) {
+    if (index < 1) return;
+    const { editSchema } = this;
+    const current = editSchema[index - 1];
+    this.editSchema = this.editSchema.concat(current);
+  }
   removeItem(index: number) {
     this.editSchema = this.editSchema.splice(index, 1);
   }

@@ -1,6 +1,6 @@
 export enum IssueType {
-  Single = 0,
-  Multiple = 1
+  Single = 1,
+  Multiple = 2
 }
 export interface Exam {
   option: string;

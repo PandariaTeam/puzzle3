@@ -27,7 +27,7 @@ import { useState, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
-import { Exam, initViewSchema } from '@/stores/domain';
+import { Exam, IssueType } from '@/stores/domain';
 import { PuzzleDrawer } from './draw';
 import { labelCls, titleCls } from './style';
 
@@ -78,13 +78,10 @@ const PuzzleForm = () => {
     }>
   >();
   const actionGuard = {
-    beforeAddRow: async (
-      defaultValue: any,
-      insertIndex: number,
-      count: number
-    ) => {
-      console.log('defaultValue', defaultValue);
-      formStore.addItem();
+    beforeAddRow: async (defaultValue: any, insertIndex: number) => {
+      // TODO: defaultValue 存在是add不存在是copy,没查到文档，先hack解决
+      if (defaultValue) formStore.addItem();
+      if (!defaultValue) formStore.copyItem(insertIndex);
       actionRef.current?.add();
     },
     beforeRemoveRow: async (index: number) => {
@@ -317,7 +314,7 @@ const PuzzleForm = () => {
         <ProCard colSpan='calc(100% - 400px)' title='Puzzle表单'>
           <ProForm
             form={form}
-            onValuesChange={(val) =>
+            onValuesChange={() =>
               console.log(
                 'ss',
                 form.getFieldsValue(),
@@ -328,6 +325,7 @@ const PuzzleForm = () => {
             <ProFormList
               actionGuard={actionGuard as any}
               actionRef={actionRef}
+              // actionRender={renderAction}
               itemRender={({ action }, listMeta) => {
                 const record = formStore.editSchema[listMeta.index];
                 // console.log('listMeta', listMeta);
@@ -352,7 +350,7 @@ const PuzzleForm = () => {
                     extra={action}
                     bodyStyle={{ paddingBlockEnd: 0 }}
                   >
-                    {record.type === 0 ? (
+                    {record.type === IssueType.Single ? (
                       <ProFormRadio.Group
                         name='option'
                         label={record.name}
@@ -375,7 +373,7 @@ const PuzzleForm = () => {
                   {(stateValue as any)?.label ?? 'Hello Web3'}
                 </p>
               }
-              initialValue={formStore.editSchema}
+              initialValue={formStore.editSchema.map(() => null)}
               creatorButtonProps={{
                 position: 'bottom'
               }}
