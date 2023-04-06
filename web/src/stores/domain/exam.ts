@@ -18,3 +18,5 @@ export const initEditSchema: EditSchema = {
   examinations: [{ option: '111' }, { option: '222' }, { option: '333' }],
   answer: '111'
 };
+
+export const initViewSchema = [{ option: '' }];

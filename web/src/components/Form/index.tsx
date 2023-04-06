@@ -27,7 +27,7 @@ import { useState, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
-import { Exam } from '@/stores/domain';
+import { Exam, initViewSchema } from '@/stores/domain';
 import { PuzzleDrawer } from './draw';
 import { labelCls, titleCls } from './style';
 
@@ -79,11 +79,11 @@ const PuzzleForm = () => {
   >();
   const actionGuard = {
     beforeAddRow: async (
-      defaultValue: string,
+      defaultValue: any,
       insertIndex: number,
       count: number
     ) => {
-      console.log('amen', defaultValue, insertIndex, count);
+      console.log('defaultValue', defaultValue);
       formStore.addItem();
       actionRef.current?.add();
     },
@@ -320,7 +320,6 @@ const PuzzleForm = () => {
             onValuesChange={(val) =>
               console.log(
                 'ss',
-                val,
                 form.getFieldsValue(),
                 toJS(formStore.editSchema)
               )
@@ -330,10 +329,8 @@ const PuzzleForm = () => {
               actionGuard={actionGuard as any}
               actionRef={actionRef}
               itemRender={({ action }, listMeta) => {
-                // const { record } = listMeta;
                 const record = formStore.editSchema[listMeta.index];
-                console.log('listMeta', listMeta, record);
-                // console.log('s', toJS(formStore.editSchema));
+                // console.log('listMeta', listMeta);
                 const options = record.examinations.map((item: Exam) => {
                   return { label: item.option, value: item.option };
                 });

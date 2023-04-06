@@ -20,8 +20,6 @@ export class FormStore {
   }
   addItem() {
     this.editSchema = this.editSchema.concat(initEditSchema);
-    // this.editSchema.push(initEditSchema);
-    // console.log('this', this.editSchema);
   }
   removeItem(index: number) {
     this.editSchema = this.editSchema.splice(index, 1);

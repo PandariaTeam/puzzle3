@@ -9,14 +9,14 @@ import {
 } from '@ant-design/pro-components';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
-import { IssueType, EditSchema, Exam } from '@/stores/domain';
+import { IssueType, EditSchema, Exam, initEditSchema } from '@/stores/domain';
 import { Form, message } from 'antd';
 
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
+type schemaKey = keyof EditSchema;
+const validateForm = (values: EditSchema): boolean => {
+  return Object.keys(initEditSchema).every((key) => {
+    if (key === 'examinations') return values[key].length > 0;
+    return values[key as schemaKey] ?? false;
   });
 };
 
@@ -48,7 +48,10 @@ export const PuzzleDrawer = observer(() => {
       onValuesChange={handleValueChange}
       submitTimeout={2000}
       onFinish={async (values) => {
-        await waitTime(200);
+        if (!validateForm(values)) {
+          message.error('请填写完整配置项');
+          return;
+        }
         formStore.updateEditSchema({
           ...values,
           answer:
