@@ -34,12 +34,10 @@ const dataSource = [
 
 function Home() {
   const {
-    rootStore: { web3Store, userStore }
+    rootStore: { web3Store }
   } = useStore();
   useEffect(() => {
-    web3Store.connectToMetaMask();
-    web3Store.test();
-    userStore.getPuzzleList();
+    web3Store.getTotalList();
   }, []);
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>

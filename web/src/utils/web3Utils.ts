@@ -3,8 +3,8 @@ import * as ethers from 'ethers';
 import { abi } from './abi';
 
 export const chainId = '0xaa36a7';
+export const contractAddress = '0xb0a14E64E6a74A397fbaA94cC700158Bf655BD99';
 export const readContractData = async (payload: any) => {
-  const contractAddress = '0xb0a14E64E6a74A397fbaA94cC700158Bf655BD99';
   const { web3Ref, contractABI, method } = payload;
   const signer = web3Ref.getSigner();
   const contract = new ethers.Contract(contractAddress, contractABI, signer);

@@ -1,15 +1,19 @@
 import { makeAutoObservable, flow } from 'mobx';
 import dayjs from 'dayjs';
+import { message } from 'antd';
 import { createPuzzle, getMetaDataById } from '@/services/api';
 import { IPuzzle3Metadata, Puzzle3Difficulty } from '@puzzle3/types';
 import { EditSchema, initEditSchema } from './domain';
-const puzzleAddress = '0x35F10c7208baEEB1ca434D0f2306590b7b7Bd3Eb';
+import { Web3Store } from './web3';
+// const puzzleAddress = '0x3CA869f65e32279D5e827b156320537C3e8c894c';
 export class FormStore {
   preview = true;
   drawerVisible = false;
   editSchema: EditSchema[] = [initEditSchema];
   viewSchema: EditSchema[] = [];
   currentIndex = 0;
+  puzzleAddress = '';
+  web3Store: Web3Store;
   formData: IPuzzle3Metadata = {
     name: 'amen',
     author: 'yunbei',
@@ -22,8 +26,9 @@ export class FormStore {
     formSchema: {}
   };
 
-  constructor() {
+  constructor(root: { web3Store: Web3Store }) {
     makeAutoObservable(this);
+    this.web3Store = root.web3Store;
   }
   changeVisible() {
     const { drawerVisible } = this;
@@ -31,6 +36,9 @@ export class FormStore {
   }
   updateIndex(index: number) {
     this.currentIndex = index;
+  }
+  updateAddress(address: string) {
+    this.puzzleAddress = address;
   }
   addItem() {
     this.editSchema = this.editSchema.concat(initEditSchema);
@@ -58,10 +66,18 @@ export class FormStore {
         ...this.formData,
         formSchema: JSON.stringify(this.editSchema)
       };
-      const res = yield createPuzzle({ metadata, puzzleAddress });
-      console.log('res', res);
+      if (!this.puzzleAddress) return;
+      const res = yield Promise.all([
+        createPuzzle({
+          metadata,
+          puzzleAddress: this.puzzleAddress
+        }),
+        this.web3Store.register(this.puzzleAddress)
+      ]);
+      return res;
     } catch (error) {
-      console.log('err', error);
+      message.warning('该合约不符合Puzzle3的要求');
+      return false;
     }
   });
   getInfo = flow(function* (this: FormStore, id: string) {

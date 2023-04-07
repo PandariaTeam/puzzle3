@@ -4,12 +4,14 @@ import {
   ProCard,
   ProForm,
   ProFormList,
+  ProFormText,
   ProFormRadio,
   ProFormCheckbox,
   FormListActionType
 } from '@ant-design/pro-components';
 import { Button } from 'antd';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
@@ -21,7 +23,9 @@ import { BaseProps } from './constant';
 
 interface Props extends BaseProps {}
 const PuzzleForm = (props: Props) => {
+  const navigate = useNavigate();
   const [form] = ProForm.useForm();
+  const [submitLoading, setSubmitLoading] = useState(false);
   const { preview } = props;
   const {
     rootStore: { formStore, helperStore }
@@ -52,9 +56,20 @@ const PuzzleForm = (props: Props) => {
       formStore.removeItem(index);
     }
   };
+  const onSubmit = async () => {
+    setSubmitLoading(true);
+    const res = await formStore.create();
+    setSubmitLoading(false);
+    if (res) navigate('/');
+  };
   const renderSubmitter = () => {
     return [
-      <Button onClick={() => formStore.create()} type='primary' key='edit'>
+      <Button
+        loading={submitLoading}
+        onClick={() => onSubmit()}
+        type='primary'
+        key='edit'
+      >
         提交
       </Button>,
       <Button key='read'>重置</Button>
@@ -131,15 +146,25 @@ const PuzzleForm = (props: Props) => {
           <ProForm
             form={form}
             submitter={{ render: renderSubmitter }}
-            onValuesChange={() =>
+            onValuesChange={(val) => {
+              if (val?.puzzleAddress)
+                formStore.updateAddress(val?.puzzleAddress);
               console.log(
                 'ss',
                 form.getFieldsValue(),
                 toJS(formStore.editSchema),
                 toJS(formStore.viewSchema)
-              )
-            }
+              );
+            }}
           >
+            {!preview && (
+              <ProFormText
+                name='puzzleAddress'
+                required
+                label='请输入合约地址'
+                placeholder='请输入合约地址'
+              />
+            )}
             {renderProList()}
           </ProForm>
         </ProCard>
