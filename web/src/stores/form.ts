@@ -7,7 +7,6 @@ import { EditSchema, initEditSchema } from './domain';
 import { Web3Store } from './web3';
 // const puzzleAddress = '0x3CA869f65e32279D5e827b156320537C3e8c894c';
 export class FormStore {
-  preview = true;
   drawerVisible = false;
   editSchema: EditSchema[] = [initEditSchema];
   viewSchema: EditSchema[] = [];
@@ -88,6 +87,9 @@ export class FormStore {
     try {
       const res = yield getMetaDataById(id);
       this.viewSchema = JSON.parse(res?.metadata?.formSchema);
+      this.formData = {
+        ...res?.metadata
+      };
     } catch (error) {
       console.log('err', error);
     }

@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { EditOutlined } from '@ant-design/icons';
+import ReactMarkdown from 'react-markdown';
 import {
   ProCard,
   ProForm,
@@ -141,9 +142,18 @@ const PuzzleForm = (props: Props) => {
       />
     );
   };
+  const renderMd = () => {
+    if (!preview) return null;
+    return (
+      <ProCard style={{ marginBottom: 20 }}>
+        <ReactMarkdown>{formStore?.formData?.description}</ReactMarkdown>
+      </ProCard>
+    );
+  };
   const colSpan = preview ? 'calc(100%)' : 'calc(100% - 400px)';
   return (
     <>
+      {renderMd()}
       <ProCard bordered split='vertical' headerBordered>
         <PuzzleFormHelper preview={preview} />
         <ProCard colSpan={colSpan} title='Puzzle表单'>
