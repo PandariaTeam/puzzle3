@@ -24,9 +24,9 @@ export const getVestingContract = async (w3: any) => {
   const result = await readContractData({
     web3Ref: w3,
     contractAddress,
-    contractABI: abi,
-    method: 'puzzles',
-    args: ['0xF0D675d78820D28b89CF457955D2aA595dD799e0']
+    contractABI: abi
+    // method: 'puzzles',
+    // args: ['0xF0D675d78820D28b89CF457955D2aA595dD799e0']
   });
   return result;
 };

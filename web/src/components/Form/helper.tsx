@@ -21,6 +21,7 @@ import {
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
 import { initialValue } from '@/stores/domain';
+import { BaseProps } from './constant';
 
 const IconMap: any = {
   PlusOutlined,
@@ -33,12 +34,12 @@ const IconMap: any = {
   SyncOutlined
 };
 
-const PuzzleFormHelper = () => {
+const PuzzleFormHelper = (props: BaseProps) => {
   const {
-    rootStore: { helperStore, formStore }
+    rootStore: { helperStore }
   } = useStore();
-
-  if (formStore.preview) return null;
+  const { preview } = props;
+  if (preview) return null;
 
   return (
     <>

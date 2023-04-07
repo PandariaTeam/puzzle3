@@ -18,7 +18,7 @@ function User() {
   const onSubmit = () => userStore.create();
   return (
     <div className={userCls}>
-      <PuzzleForm />
+      <PuzzleForm preview={false} />
       <p onClick={() => userStore.changeName()}>{userStore.name}</p>
       <Button onClick={onSubmit}>测试</Button>
     </div>

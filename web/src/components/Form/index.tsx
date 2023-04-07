@@ -16,14 +16,17 @@ import { Exam, IssueType } from '@/stores/domain';
 import PuzzleFormHelper from './helper';
 import { PuzzleDrawer } from './draw';
 import { labelCls, titleCls } from './style';
+import { BaseProps } from './constant';
 
-const PuzzleForm = () => {
+interface Props extends BaseProps {}
+const PuzzleForm = (props: Props) => {
   const [form] = ProForm.useForm();
+  const { preview } = props;
   const {
     rootStore: { formStore, helperStore }
   } = useStore();
   const openEditForm = (index: number) => {
-    if (formStore.preview) return null;
+    if (preview) return null;
     formStore.changeVisible();
     formStore.updateIndex(index);
   };
@@ -33,9 +36,9 @@ const PuzzleForm = () => {
     }>
   >();
   useEffect(() => {
-    if (!formStore.preview) return;
+    if (!preview) return;
     helperStore.hideOperateBtn();
-  }, [formStore.preview]);
+  }, [preview]);
   const actionGuard = {
     beforeAddRow: async (defaultValue: any, insertIndex: number) => {
       // TODO: defaultValue 存在是add不存在是copy,没查到文档，先hack解决
@@ -48,11 +51,11 @@ const PuzzleForm = () => {
       formStore.removeItem(index);
     }
   };
-  const colSpan = formStore.preview ? 'calc(100%)' : 'calc(100% - 400px)';
+  const colSpan = preview ? 'calc(100%)' : 'calc(100% - 400px)';
   return (
     <>
       <ProCard bordered split='vertical' headerBordered>
-        <PuzzleFormHelper />
+        <PuzzleFormHelper preview={preview} />
         <ProCard colSpan={colSpan} title='Puzzle表单'>
           <ProForm
             form={form}
@@ -85,7 +88,7 @@ const PuzzleForm = () => {
                         <span className={`${titleCls}-text`}>{`第${
                           listMeta.index + 1
                         }题`}</span>
-                        {!formStore.preview && <EditOutlined />}
+                        {!preview && <EditOutlined />}
                       </div>
                     }
                     extra={action}
@@ -123,7 +126,7 @@ const PuzzleForm = () => {
           </ProForm>
         </ProCard>
       </ProCard>
-      <PuzzleDrawer />
+      <PuzzleDrawer preview={preview} />
     </>
   );
 };

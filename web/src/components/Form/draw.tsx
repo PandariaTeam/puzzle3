@@ -11,6 +11,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
 import { IssueType, EditSchema, Exam, initEditSchema } from '@/stores/domain';
 import { Form, message } from 'antd';
+import { BaseProps } from './constant';
 
 type schemaKey = keyof EditSchema;
 const validateForm = (values: EditSchema): boolean => {
@@ -20,13 +21,14 @@ const validateForm = (values: EditSchema): boolean => {
   });
 };
 
-export const PuzzleDrawer = observer(() => {
+export const PuzzleDrawer = observer((props: BaseProps) => {
   const [form] = Form.useForm<EditSchema>();
+  const { preview } = props;
   const [examType, setType] = useState<IssueType>(IssueType.Single);
   const {
     rootStore: { formStore }
   } = useStore();
-  if (formStore.preview) return null;
+  if (preview) return null;
   const handleValueChange = (val: Partial<EditSchema>) => {
     if (val?.type) {
       setType(val?.type);
