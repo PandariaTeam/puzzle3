@@ -11,7 +11,7 @@ import {
 } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
@@ -25,10 +25,11 @@ interface Props extends BaseProps {}
 const PuzzleForm = (props: Props) => {
   const navigate = useNavigate();
   const [form] = ProForm.useForm();
+  const { instanceId } = useParams();
   const [submitLoading, setSubmitLoading] = useState(false);
   const { preview } = props;
   const {
-    rootStore: { formStore, helperStore }
+    rootStore: { formStore, helperStore, web3Store }
   } = useStore();
   const openEditForm = (index: number) => {
     if (preview) return null;
@@ -58,7 +59,9 @@ const PuzzleForm = (props: Props) => {
   };
   const onSubmit = async () => {
     setSubmitLoading(true);
-    const res = await formStore.create();
+    const res = preview
+      ? await web3Store.submitInstance(instanceId)
+      : await formStore.create();
     setSubmitLoading(false);
     if (res) navigate('/');
   };

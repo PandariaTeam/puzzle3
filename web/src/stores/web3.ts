@@ -8,7 +8,9 @@ import { abi } from '@/utils/abi';
 export class Web3Store {
   chainId = '';
   selectedAddress = '';
+  createLoading = false;
   w3: any = null;
+
   puzzleList = [];
 
   constructor() {
@@ -73,7 +75,31 @@ export class Web3Store {
       const res = yield fetchPuzzleList({
         puzzleAddressList
       });
-      this.puzzleList = res ?? [];
+      this.puzzleList = res?.list ?? [];
+    } catch (error) {
+      message.warning('该合约不符合Puzzle3的要求');
+    }
+  });
+  createInstance = flow(function* (this: Web3Store, puzzleAddress: string) {
+    try {
+      const signer = this.w3.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      this.createLoading = true;
+      const tx: any = yield contract.createPuzzleInstance(puzzleAddress);
+      const res = yield tx.wait();
+      this.createLoading = false;
+      return res?.events[0]?.args[1] ?? '';
+    } catch (error) {
+      message.warning('该合约不符合Puzzle3的要求');
+    }
+  });
+  submitInstance = flow(function* (this: Web3Store, instanceAddress?: string) {
+    try {
+      if (!instanceAddress) return;
+      const signer = this.w3.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const res = yield contract.submitPuzzleInstance(instanceAddress);
+      console.log('res', res);
     } catch (error) {
       message.warning('该合约不符合Puzzle3的要求');
     }

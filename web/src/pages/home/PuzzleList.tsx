@@ -1,6 +1,6 @@
 import { ProList } from '@ant-design/pro-components';
 import { IPuzzle3Metadata, Puzzle3Difficulty } from '@puzzle3/types';
-import { Avatar, Empty, Space, Tag, Typography } from 'antd';
+import { Avatar, Empty, Space, Tag, Typography, Button } from 'antd';
 import React from 'react';
 
 export interface IPuzzle {
@@ -10,12 +10,16 @@ export interface IPuzzle {
 
 export interface IPuzzleListProps {
   list: IPuzzle[];
+  loading: boolean;
+  createLoading: boolean;
   onClickSolve: (puzzleAddress: string) => void | Promise<void>;
 }
 
 export const PuzzleList: React.FC<IPuzzleListProps> = ({
   list,
-  onClickSolve
+  onClickSolve,
+  loading,
+  createLoading
 }) => {
   if (!list.length) {
     return (
@@ -32,6 +36,7 @@ export const PuzzleList: React.FC<IPuzzleListProps> = ({
       dataSource={list}
       showActions='hover'
       showExtra='hover'
+      loading={loading}
       metas={{
         title: {
           dataIndex: ['metadata', 'name']
@@ -76,15 +81,17 @@ export const PuzzleList: React.FC<IPuzzleListProps> = ({
           }
         },
         actions: {
-          render: (text, row) => [
-            <a
+          render: (_, row) => [
+            <Button
+              type='link'
+              loading={createLoading}
               key='create_instance'
               onClick={() => {
                 onClickSolve(row.puzzleAddress);
               }}
             >
               去答题
-            </a>
+            </Button>
           ]
         }
       }}
