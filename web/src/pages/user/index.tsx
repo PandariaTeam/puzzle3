@@ -1,18 +1,22 @@
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
-import { getMetaDataById } from '@/services/api';
+import PuzzleForm from '@/components/Form';
+import { userCls } from './style';
 
 function User() {
   const {
-    rootStore: { userStore }
+    rootStore: { formStore }
   } = useStore();
+  const { id } = useParams();
   useEffect(() => {
-    getMetaDataById('2597505e-4e89-4737-98a4-fa3368359a4d');
+    if (!id) return;
+    formStore.getInfo(id);
   }, []);
   return (
-    <div>
-      <p onClick={() => userStore.changeName()}>{userStore.name}</p>
+    <div className={userCls}>
+      <PuzzleForm preview />
     </div>
   );
 }
