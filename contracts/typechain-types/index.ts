@@ -22,10 +22,8 @@ export type { ERC165 } from "./@openzeppelin/contracts/utils/introspection/ERC16
 export { ERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/ERC165__factory";
 export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC165";
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
-export type { APuzzle } from "./contracts/APuzzle";
-export { APuzzle__factory } from "./factories/contracts/APuzzle__factory";
-export type { IPuzzle } from "./contracts/IPuzzle";
-export { IPuzzle__factory } from "./factories/contracts/IPuzzle__factory";
+export type { BasePuzzle } from "./contracts/BasePuzzle";
+export { BasePuzzle__factory } from "./factories/contracts/BasePuzzle__factory";
 export type { Puzzle3 } from "./contracts/Puzzle3";
 export { Puzzle3__factory } from "./factories/contracts/Puzzle3__factory";
 export type { Instance } from "./contracts/Test/Instance";

@@ -5,12 +5,12 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 
-abstract contract APuzzle is ERC721, Ownable {
+abstract contract BasePuzzle is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIdCounter;
 
   // Puzzle3 address
-  address public constant puzzle3 = 0x43440f3D373D7EC29dB0bBe1d7285b2af77A1240;
+  address public constant puzzle3 = 0xb0a14E64E6a74A397fbaA94cC700158Bf655BD99;
 
   constructor(
     string memory name_

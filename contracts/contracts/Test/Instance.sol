@@ -2,13 +2,13 @@
 pragma solidity ^0.8.18;
 
 contract Instance {
-  uint256 public age;
+  uint256 public age = 25;
 
-  function changeName(uint256 _age) public {
+  function setAge(uint256 _age) public {
     age = _age;
   }
 
-  function getResult() public pure returns (bool) {
-    return true;
+  function isAdult() public view returns (bool) {
+    return age >= 18;
   }
 }

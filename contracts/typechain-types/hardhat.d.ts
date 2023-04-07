@@ -45,13 +45,9 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
-      name: "APuzzle",
+      name: "BasePuzzle",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.APuzzle__factory>;
-    getContractFactory(
-      name: "IPuzzle",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IPuzzle__factory>;
+    ): Promise<Contracts.BasePuzzle__factory>;
     getContractFactory(
       name: "Puzzle3",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -106,15 +102,10 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
     getContractAt(
-      name: "APuzzle",
+      name: "BasePuzzle",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.APuzzle>;
-    getContractAt(
-      name: "IPuzzle",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IPuzzle>;
+    ): Promise<Contracts.BasePuzzle>;
     getContractAt(
       name: "Puzzle3",
       address: string,
