@@ -2,10 +2,11 @@
   "private": true,
   "scripts": {
     "build": "pnpm run /^build:.*/",
-    "dev:web": "pnpm --filter \"@puzzle3/web\" dev",
+    "dev:web": "npm run build:types && pnpm --filter=\"@puzzle3/web\" dev",
     "dev:contracts": "pnpm --filter \"@puzzle3/contracts\" dev",
     "dev:server": "pnpm --filter \"@puzzle3/server\" dev",
-    "build:web": "pnpm --filter \"@puzzle3/web\" build",
+    "build:web": "npm run build:types && pnpm --filter \"@puzzle3/web\" build",
+    "build:types": "pnpm --filter \"@puzzle3/types\" build",
     "build:contracts": "pnpm --filter \"@puzzle3/contracts\" build",
     "build:server": "pnpm --filter \"@puzzle3/server\" build"
   },
