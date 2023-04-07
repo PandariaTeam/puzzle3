@@ -8,7 +8,7 @@ import {
   ProFormCheckbox,
   FormListActionType
 } from '@ant-design/pro-components';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
@@ -23,6 +23,7 @@ const PuzzleForm = () => {
     rootStore: { formStore, helperStore }
   } = useStore();
   const openEditForm = (index: number) => {
+    if (formStore.preview) return null;
     formStore.changeVisible();
     formStore.updateIndex(index);
   };
@@ -31,6 +32,10 @@ const PuzzleForm = () => {
       name: string;
     }>
   >();
+  useEffect(() => {
+    if (!formStore.preview) return;
+    helperStore.hideOperateBtn();
+  }, [formStore.preview]);
   const actionGuard = {
     beforeAddRow: async (defaultValue: any, insertIndex: number) => {
       // TODO: defaultValue 存在是add不存在是copy,没查到文档，先hack解决
@@ -43,11 +48,12 @@ const PuzzleForm = () => {
       formStore.removeItem(index);
     }
   };
+  const colSpan = formStore.preview ? 'calc(100%)' : 'calc(100% - 400px)';
   return (
     <>
       <ProCard bordered split='vertical' headerBordered>
         <PuzzleFormHelper />
-        <ProCard colSpan='calc(100% - 400px)' title='Puzzle表单'>
+        <ProCard colSpan={colSpan} title='Puzzle表单'>
           <ProForm
             form={form}
             onValuesChange={() =>
@@ -61,7 +67,6 @@ const PuzzleForm = () => {
             <ProFormList
               actionGuard={actionGuard as any}
               actionRef={actionRef}
-              // actionRender={renderAction}
               itemRender={({ action }, listMeta) => {
                 const record = formStore.editSchema[listMeta.index];
                 // console.log('listMeta', listMeta);
@@ -80,7 +85,7 @@ const PuzzleForm = () => {
                         <span className={`${titleCls}-text`}>{`第${
                           listMeta.index + 1
                         }题`}</span>
-                        <EditOutlined />
+                        {!formStore.preview && <EditOutlined />}
                       </div>
                     }
                     extra={action}

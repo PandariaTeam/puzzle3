@@ -35,10 +35,10 @@ const IconMap: any = {
 
 const PuzzleFormHelper = () => {
   const {
-    rootStore: { helperStore }
+    rootStore: { helperStore, formStore }
   } = useStore();
-  // const [stateValue, setStateValue] = useState({});
-  // const [json, setJson] = useState(() => JSON.stringify(initialValue));
+
+  if (formStore.preview) return null;
 
   return (
     <>

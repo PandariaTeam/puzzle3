@@ -26,6 +26,7 @@ export const PuzzleDrawer = observer(() => {
   const {
     rootStore: { formStore }
   } = useStore();
+  if (formStore.preview) return null;
   const handleValueChange = (val: Partial<EditSchema>) => {
     if (val?.type) {
       setType(val?.type);

@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 import { EditSchema, initEditSchema } from './domain';
 
 export class FormStore {
-  preview = false;
+  preview = true;
   drawerVisible = false;
   editSchema: EditSchema[] = [initEditSchema];
   viewSchema = [];

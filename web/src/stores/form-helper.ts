@@ -3,7 +3,7 @@ import { initialValue } from './domain';
 
 type Value = Record<string, any>;
 export class FormHelperStore {
-  stateValue = {};
+  stateValue: any = {};
   json = JSON.stringify(initialValue);
 
   constructor() {
@@ -14,5 +14,10 @@ export class FormHelperStore {
   };
   setValue = (val: Value) => {
     this.stateValue = { ...val };
+  };
+  hideOperateBtn = () => {
+    this.stateValue.creatorButtonProps = false;
+    this.stateValue.deleteIconProps = false;
+    this.stateValue.copyIconProps = false;
   };
 }
