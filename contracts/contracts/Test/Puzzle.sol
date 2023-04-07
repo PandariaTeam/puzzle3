@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import '../APuzzle.sol';
+import '../BasePuzzle.sol';
 import './Instance.sol';
 
-contract Puzzle is APuzzle {
-  constructor() APuzzle('Hello') {}
+// test111233
+contract Puzzle is BasePuzzle {
+  constructor() BasePuzzle('Hello') {}
 
   function createInstance(
     address _solver
@@ -20,6 +21,6 @@ contract Puzzle is APuzzle {
   ) public view override returns (bool) {
     _solver;
     Instance instance = Instance(_instance);
-    return instance.getResult();
+    return instance.isAdult();
   }
 }

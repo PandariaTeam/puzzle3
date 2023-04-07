@@ -10,8 +10,9 @@
 import { Router } from 'itty-router';
 import { Context } from './context';
 import getMetadataRoute from './routes/get_metadata';
-// import getPuzzleRoute from './routes/get_puzzle';
+import getPuzzlesListRoute from './routes/get_metadata_list';
 import postMetadataRoute from './routes/post_metadata';
+import { getLogo } from './assets/logo';
 
 const router = Router();
 
@@ -47,6 +48,15 @@ export default {
             }
           })
       )
+      .get(
+        '/puzzles/:puzzleId/:nftId/img.svg',
+        () =>
+          new Response(getLogo(), {
+            headers: {
+              'Content-Type': 'image/svg+xml'
+            }
+          })
+      )
       .get('/puzzles/:puzzleId/:nftId', (req) => {
         const { puzzleId, nftId } = req.params;
         console.log(puzzleId);
@@ -54,7 +64,8 @@ export default {
           {
             name: `Puzzle3 #${nftId}`,
             description: 'test puzzle',
-            image: 'https://i.328888.xyz/2023/04/06/iNZt3L.png',
+            image: `https://service.puzzle3.cc/puzzles/${puzzleId}/${nftId}/img.svg`,
+            // image: 'https://i.328888.xyz/2023/04/06/iNZt3L.png',
             attributes: [
               {
                 trait_type: 'background',
@@ -93,7 +104,11 @@ export default {
           { status: 200 }
         );
       })
-      .get('/api/metadata/:puzzleId', getMetadataRoute)
+      // 根据 puzzle address 获取详情
+      .get('/api/metadata/:puzzleAddress', getMetadataRoute)
+      // 根据 puzzle address list 获取详情列表
+      .post('/api/metadata/list', getPuzzlesListRoute)
+      // 保存 metadata
       .post('/api/metadata', postMetadataRoute);
 
     router.all('*', () => new Response('404 Not Found', { status: 404 }));

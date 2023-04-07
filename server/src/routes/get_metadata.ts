@@ -1,19 +1,20 @@
 import { IPuzzle3Metadata } from '@puzzle3/types';
 import { createRoute } from './create-route';
 
+// GET metadata
 export interface IPathParmas {
-  puzzleId: string;
+  puzzleAddress: string;
 }
 
 interface IResponse {
-  puzzleId: string;
+  puzzleAddress: string;
   metadata: IPuzzle3Metadata;
 }
 
 export default createRoute<IResponse>(async (ctx) => {
-  const { puzzleId } = ctx.irequest.params as unknown as IPathParmas;
+  const { puzzleAddress } = ctx.irequest.params as unknown as IPathParmas;
   const metadata = await ctx.puzzle3_metadata_kv.get<IPuzzle3Metadata>(
-    puzzleId,
+    puzzleAddress,
     {
       type: 'json',
       cacheTtl: 1 * 24 * 60 * 60
@@ -21,10 +22,10 @@ export default createRoute<IResponse>(async (ctx) => {
   );
 
   if (!metadata) {
-    throw new Error('Puzzle not found by id: ' + puzzleId);
+    throw new Error('Puzzle not found by id: ' + puzzleAddress);
   }
   return {
-    puzzleId,
+    puzzleAddress,
     metadata
   };
 });

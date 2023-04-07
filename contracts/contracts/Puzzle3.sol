@@ -1,8 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+//  ________  ___  ___  ________  ________  ___       _______  ________
+// |\   __  \|\  \|\  \|\_____  \|\_____  \|\  \     |\  ___ \|\_____  \
+// \ \  \|\  \ \  \\\  \\|___/  /|\|___/  /\ \  \    \ \   __/\|____|\ /_
+//  \ \   ____\ \  \\\  \   /  / /    /  / /\ \  \    \ \  \_|/__   \|\  \
+//   \ \  \___|\ \  \\\  \ /  /_/__  /  /_/__\ \  \____\ \  \_|\ \ __\_\  \
+//    \ \__\    \ \_______\\________\\________\ \_______\ \_______\\_______\
+//     \|__|     \|_______|\|_______|\|_______|\|_______|\|_______\|_______|
+
 import '@openzeppelin/contracts/access/Ownable.sol';
-import './APuzzle.sol';
+import './BasePuzzle.sol';
 
 contract Puzzle3 is Ownable {
   // #region state variables
@@ -20,6 +28,8 @@ contract Puzzle3 is Ownable {
     uint256 instanceCreatedCount;
     // Solved instance count
     uint256 instanceSolvedCount;
+    // Hash(answers)
+    // bytes32 answer;
   }
 
   // Mapping from puzzle address to puzzle data
@@ -27,6 +37,8 @@ contract Puzzle3 is Ownable {
 
   // creator_address => puzzle_address[]
   mapping(address => address[]) internal creatorOwnedPuzzles;
+
+  address[] internal totalPuzzleList;
 
   struct PuzzleInstance {
     address instanceAddress;
@@ -37,9 +49,10 @@ contract Puzzle3 is Ownable {
     // Block time of puzzle instance completed
     uint256 completedAt;
     // Puzzle address of current instance
-    APuzzle puzzle;
+    BasePuzzle puzzle;
     // Is completed
     bool completed;
+    // bytes32 answer;
   }
 
   // Mapping from puzzle instance address to puzzle instance data
@@ -86,6 +99,8 @@ contract Puzzle3 is Ownable {
   error PuzzleInstanceNotExistsOrOwned(address instanceAddress);
   // Puzzle instance has been completed
   error PuzzleInstanceHasBeenCompleted(address instanceAddress);
+  error PuzzleInstanceSubmitQuestionsWrong();
+  error PuzzleInstanceSubmitContractWrong();
 
   // #endregion
 
@@ -93,7 +108,7 @@ contract Puzzle3 is Ownable {
    * Only registered puzzle will be allowed to generate and validate instances.
    * @param _puzzle The address of the puzzle
    */
-  function registerPuzzle(APuzzle _puzzle) external {
+  function registerPuzzle(BasePuzzle _puzzle /*, bytes32 answer*/) external {
     address creator = _msgSender();
     address puzzleAddress = address(_puzzle);
 
@@ -116,7 +131,9 @@ contract Puzzle3 is Ownable {
       registerAt: block.timestamp,
       instanceCreatedCount: 0,
       instanceSolvedCount: 0
+      // answer: answer
     });
+    totalPuzzleList.push(puzzleAddress);
     creatorOwnedPuzzles[creator].push(puzzleAddress);
 
     emit PuzzleRegister(creator, puzzleAddress);
@@ -128,7 +145,7 @@ contract Puzzle3 is Ownable {
    * @param _puzzle The address of the puzzle
    * @param available The available status
    */
-  function changePuzzleAvailable(APuzzle _puzzle, bool available) external {
+  function changePuzzleAvailable(BasePuzzle _puzzle, bool available) external {
     address sender = _msgSender();
     address puzzleAddress = address(_puzzle);
     if (sender != owner() && puzzles[puzzleAddress].creator != sender) {
@@ -141,7 +158,9 @@ contract Puzzle3 is Ownable {
   /**
    * Create a new puzzle instance.
    */
-  function createPuzzleInstance(APuzzle _puzzle) public payable {
+  function createPuzzleInstance(
+    BasePuzzle _puzzle
+  ) public payable returns (address) {
     address solver = _msgSender();
     address puzzleAddress = address(_puzzle);
 
@@ -155,6 +174,9 @@ contract Puzzle3 is Ownable {
       solver
     );
 
+    // bytes32 answer = keccak256(abi.encodePacked(puzzles[puzzleAddress].answer));
+    // string memory answer = puzzles[puzzleAddress].answer;
+
     // Store instance relationship with solver and puzzle.
     instances[instanceAddress] = PuzzleInstance({
       instanceAddress: instanceAddress,
@@ -163,6 +185,7 @@ contract Puzzle3 is Ownable {
       completedAt: 0,
       puzzle: _puzzle,
       completed: false
+      // answer: puzzles[puzzleAddress].answer
     });
     solverCreatedPuzzleInstances[solver][puzzleAddress].push(instanceAddress);
     puzzles[puzzleAddress].instanceCreatedCount += 1;
@@ -172,15 +195,19 @@ contract Puzzle3 is Ownable {
 
     // Retrieve created instance via logs.
     emit PuzzleInstanceCreate(solver, instanceAddress, puzzleAddress);
+
+    return instanceAddress;
   }
 
   /**
    * Submit a puzzle instance.
    */
-  function submitPuzzleInstance(address payable _instance) public {
+  function submitPuzzleInstance(
+    address payable _instance // , bytes32 answer
+  ) public {
     address solver = _msgSender();
     // Get solver and puzzle.
-    PuzzleInstance storage instance = instances[_instance];
+    PuzzleInstance memory instance = instances[_instance];
 
     if (instance.solver != solver) {
       revert PuzzleInstanceNotExistsOrOwned(_instance);
@@ -189,69 +216,47 @@ contract Puzzle3 is Ownable {
       revert PuzzleInstanceHasBeenCompleted(_instance);
     }
 
-    // Have the puzzle check the instance.
-    if (instance.puzzle.validateInstance(_instance, solver)) {
+    address puzzleAddress = address(instance.puzzle);
+    // bytes32 targetAnswer = keccak256(abi.encodePacked(answer));
+
+    // if (answer != instance.answer) {
+    //   emit PuzzleInstanceSubmit(solver, _instance, puzzleAddress, false);
+    //   revert PuzzleInstanceSubmitQuestionsWrong();
+    // } else
+    if (instance.puzzle.validateInstance(_instance, solver) != true) {
+      emit PuzzleInstanceSubmit(solver, _instance, puzzleAddress, false);
+      revert PuzzleInstanceSubmitContractWrong();
+    } else {
       // Register instance as completed.
       instance.completed = true;
       instance.completedAt = block.timestamp;
+      puzzles[puzzleAddress].instanceSolvedCount += 1;
       instance.puzzle.mint(solver);
-      puzzles[address(instance.puzzle)].instanceSolvedCount += 1;
 
       // statistics.submitSuccess(_instance, address(data.level), msg.sender);
       // Notify success via logs.
-      emit PuzzleInstanceSubmit(
-        solver,
-        _instance,
-        address(instance.puzzle),
-        true
-      );
-    } else {
-      emit PuzzleInstanceSubmit(
-        solver,
-        _instance,
-        address(instance.puzzle),
-        false
-      );
-      // statistics.submitFailure(_instance, address(data.level), msg.sender);
+      emit PuzzleInstanceSubmit(solver, _instance, puzzleAddress, true);
     }
   }
 
   // Get puzzles by creator address
   function getPuzzlesByCreator(
     address _creator
-  ) public view returns (PuzzleFactory[] memory) {
-    address[] memory createdPuzzleAddressList = creatorOwnedPuzzles[_creator];
-    PuzzleFactory[] memory createdPuzzles = new PuzzleFactory[](
-      createdPuzzleAddressList.length
-    );
-    if (createdPuzzleAddressList.length <= 0) {
-      return createdPuzzles;
-    }
-    for (uint i = 0; i < createdPuzzleAddressList.length; i += 1) {
-      createdPuzzles[i] = puzzles[createdPuzzleAddressList[i]];
-    }
-    return createdPuzzles;
+  ) public view returns (address[] memory) {
+    return creatorOwnedPuzzles[_creator];
   }
 
   // Get puzzle instances by puzzle address
   function getPuzzleInstancesByPuzzleAddress(
     address _puzzleAddress
-  ) public view returns (PuzzleInstance[] memory) {
+  ) public view returns (address[] memory) {
     if (puzzles[_puzzleAddress].creator == address(0)) {
       revert PuzzleNotExistsOrOwned(_puzzleAddress);
     }
-    address[] memory createdPuzzleInstanceAddressList = puzzleOwnedInstances[
-      _puzzleAddress
-    ];
+    return puzzleOwnedInstances[_puzzleAddress];
+  }
 
-    PuzzleInstance[] memory createdInstances = new PuzzleInstance[](
-      createdPuzzleInstanceAddressList.length
-    );
-
-    for (uint i = 0; i < createdPuzzleInstanceAddressList.length; i += 1) {
-      createdInstances[i] = instances[createdPuzzleInstanceAddressList[i]];
-    }
-
-    return createdInstances;
+  function getTotalPuzzleList() public view returns (address[] memory) {
+    return totalPuzzleList;
   }
 }

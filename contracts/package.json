@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "echo \"dev\"",
-    "build": "echo \"build\""
+    "build": "echo \"build\"",
+    "deploy": "hardhat run scripts/deploy-puzzle3.ts --network sepolia",
+    "deploy:test": "hardhat run scripts/deploy-testpuzzle.ts --network sepolia"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
