@@ -5,6 +5,13 @@ export const getMetaDataById = (id: string) => {
   return client.get(`/${id}`);
 };
 
+interface PuzzleListParmas {
+  puzzleAddressList: string[];
+}
+export const getPuzzleList = (payload: PuzzleListParmas) => {
+  return client.post('/list', { ...payload });
+};
+
 interface Payload {
   metadata: IPuzzle3Metadata;
 }

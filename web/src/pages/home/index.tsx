@@ -9,6 +9,7 @@ function Home() {
   } = useStore();
   useEffect(() => {
     web3Store.connectToMetaMask();
+    web3Store.test();
   }, []);
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>

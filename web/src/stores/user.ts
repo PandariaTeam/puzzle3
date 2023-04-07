@@ -1,6 +1,6 @@
 import { makeAutoObservable, flow } from 'mobx';
 import dayjs from 'dayjs';
-import { getMetaDataById, createPuzzle } from '@/services/api';
+import { getMetaDataById, createPuzzle, getPuzzleList } from '@/services/api';
 import { IPuzzle3Metadata, Puzzle3Difficulty } from '@puzzle3/types';
 
 export class UserStore {
@@ -34,7 +34,6 @@ export class UserStore {
   }
   create = flow(function* (this: UserStore) {
     try {
-      // yield instead of await.
       const res = yield createPuzzle({ metadata: this.formData });
       console.log('res', res);
     } catch (error) {
@@ -45,6 +44,14 @@ export class UserStore {
     try {
       // yield instead of await.
       const res = yield getMetaDataById(id);
+      console.log('res', res);
+    } catch (error) {
+      console.log('err', error);
+    }
+  });
+  getPuzzleList = flow(function* (this: UserStore) {
+    try {
+      const res = yield getPuzzleList({ puzzleAddressList: [] });
       console.log('res', res);
     } catch (error) {
       console.log('err', error);
