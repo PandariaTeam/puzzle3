@@ -14,6 +14,7 @@ export const getPuzzleList = (payload: PuzzleListParmas) => {
 
 interface Payload {
   metadata: IPuzzle3Metadata;
+  puzzleAddress: string;
 }
 export const createPuzzle = (payload: Payload) => {
   return client.post('', { ...payload });

@@ -8,6 +8,7 @@ import {
   ProFormCheckbox,
   FormListActionType
 } from '@ant-design/pro-components';
+import { Button } from 'antd';
 import { useRef, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
@@ -51,6 +52,76 @@ const PuzzleForm = (props: Props) => {
       formStore.removeItem(index);
     }
   };
+  const renderSubmitter = () => {
+    return [
+      <Button onClick={() => formStore.create()} type='primary' key='edit'>
+        提交
+      </Button>,
+      <Button key='read'>重置</Button>
+    ];
+  };
+  const renderProList = () => {
+    const dataSorce = preview ? formStore.viewSchema : formStore.editSchema;
+    if (!dataSorce.length) return null;
+    return (
+      <ProFormList
+        actionGuard={actionGuard as any}
+        actionRef={actionRef}
+        itemRender={({ action }, listMeta) => {
+          const record = dataSorce[listMeta.index];
+          const options = record.examinations.map((item: Exam) => {
+            return { label: item.option, value: item.option };
+          });
+          return (
+            <ProCard
+              bordered
+              style={{ marginBlockEnd: 8 }}
+              title={
+                <div
+                  className={titleCls}
+                  onClick={() => openEditForm(listMeta.index)}
+                >
+                  <span className={`${titleCls}-text`}>{`第${
+                    listMeta.index + 1
+                  }题`}</span>
+                  {!preview && <EditOutlined />}
+                </div>
+              }
+              extra={action}
+              bodyStyle={{ paddingBlockEnd: 0 }}
+            >
+              {record.type === IssueType.Single ? (
+                <ProFormRadio.Group
+                  name='option'
+                  layout='vertical'
+                  label={record.name}
+                  options={options}
+                />
+              ) : (
+                <ProFormCheckbox.Group
+                  name='option'
+                  layout='vertical'
+                  label={record.name}
+                  options={options}
+                />
+              )}
+            </ProCard>
+          );
+        }}
+        name='examinations'
+        label={
+          <p className={labelCls}>
+            {(helperStore.stateValue as any)?.label ?? 'Hello Web3'}
+          </p>
+        }
+        initialValue={dataSorce.map(() => null)}
+        creatorButtonProps={{
+          position: 'bottom'
+        }}
+        {...helperStore.stateValue}
+      />
+    );
+  };
   const colSpan = preview ? 'calc(100%)' : 'calc(100% - 400px)';
   return (
     <>
@@ -59,70 +130,17 @@ const PuzzleForm = (props: Props) => {
         <ProCard colSpan={colSpan} title='Puzzle表单'>
           <ProForm
             form={form}
+            submitter={{ render: renderSubmitter }}
             onValuesChange={() =>
               console.log(
                 'ss',
                 form.getFieldsValue(),
-                toJS(formStore.editSchema)
+                toJS(formStore.editSchema),
+                toJS(formStore.viewSchema)
               )
             }
           >
-            <ProFormList
-              actionGuard={actionGuard as any}
-              actionRef={actionRef}
-              itemRender={({ action }, listMeta) => {
-                const record = formStore.editSchema[listMeta.index];
-                // console.log('listMeta', listMeta);
-                const options = record.examinations.map((item: Exam) => {
-                  return { label: item.option, value: item.option };
-                });
-                return (
-                  <ProCard
-                    bordered
-                    style={{ marginBlockEnd: 8 }}
-                    title={
-                      <div
-                        className={titleCls}
-                        onClick={() => openEditForm(listMeta.index)}
-                      >
-                        <span className={`${titleCls}-text`}>{`第${
-                          listMeta.index + 1
-                        }题`}</span>
-                        {!preview && <EditOutlined />}
-                      </div>
-                    }
-                    extra={action}
-                    bodyStyle={{ paddingBlockEnd: 0 }}
-                  >
-                    {record.type === IssueType.Single ? (
-                      <ProFormRadio.Group
-                        name='option'
-                        label={record.name}
-                        options={options}
-                      />
-                    ) : (
-                      <ProFormCheckbox.Group
-                        name='option'
-                        layout='horizontal'
-                        label={record.name}
-                        options={options}
-                      />
-                    )}
-                  </ProCard>
-                );
-              }}
-              name='examinations'
-              label={
-                <p className={labelCls}>
-                  {(helperStore.stateValue as any)?.label ?? 'Hello Web3'}
-                </p>
-              }
-              initialValue={formStore.editSchema.map(() => null)}
-              creatorButtonProps={{
-                position: 'bottom'
-              }}
-              {...helperStore.stateValue}
-            />
+            {renderProList()}
           </ProForm>
         </ProCard>
       </ProCard>

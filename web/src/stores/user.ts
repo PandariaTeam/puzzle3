@@ -32,17 +32,8 @@ export class UserStore {
   changeName() {
     this.name = `李四${Math.random()}`;
   }
-  create = flow(function* (this: UserStore) {
-    try {
-      const res = yield createPuzzle({ metadata: this.formData });
-      console.log('res', res);
-    } catch (error) {
-      console.log('err', error);
-    }
-  });
   getInfo = flow(function* (this: UserStore, id: string) {
     try {
-      // yield instead of await.
       const res = yield getMetaDataById(id);
       console.log('res', res);
     } catch (error) {
