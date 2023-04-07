@@ -1,7 +1,7 @@
 import * as ethers from 'ethers';
 import { makeAutoObservable, flow } from 'mobx';
 import { message } from 'antd';
-import { getVestingContract, chainId } from '@/utils/web3Utils';
+import { getPuzzleByCreater, chainId, getTotalList } from '@/utils/web3Utils';
 
 export class Web3Store {
   chainId = '';
@@ -58,6 +58,6 @@ export class Web3Store {
   });
 
   test = () => {
-    getVestingContract(this.w3);
+    getTotalList(this.w3);
   };
 }

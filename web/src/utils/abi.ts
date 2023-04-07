@@ -21,6 +21,8 @@ const abi = [
     name: 'PuzzleInstanceNotExistsOrOwned',
     type: 'error'
   },
+  { inputs: [], name: 'PuzzleInstanceSubmitContractWrong', type: 'error' },
+  { inputs: [], name: 'PuzzleInstanceSubmitQuestionsWrong', type: 'error' },
   {
     inputs: [
       { internalType: 'address', name: 'puzzleAddress', type: 'address' },
@@ -154,7 +156,7 @@ const abi = [
       { internalType: 'contract BasePuzzle', name: '_puzzle', type: 'address' }
     ],
     name: 'createPuzzleInstance',
-    outputs: [],
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'payable',
     type: 'function'
   },
@@ -170,6 +172,13 @@ const abi = [
   {
     inputs: [{ internalType: 'address', name: '_creator', type: 'address' }],
     name: 'getPuzzlesByCreator',
+    outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'getTotalPuzzleList',
     outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
     stateMutability: 'view',
     type: 'function'

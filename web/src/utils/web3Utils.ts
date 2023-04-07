@@ -4,29 +4,37 @@ import { abi } from './abi';
 
 export const chainId = '0xaa36a7';
 export const readContractData = async (payload: any) => {
-  // const { web3Ref, contractAddress, contractABI, method, args } = payload;
-  // const contractWETH = new ethers.Contract(contractAddress, contractABI, wallet)
-  // const contract = new web3Ref.Contract(contractABI, contractAddress);
-  // const result = await contract.methods[method](...args).call();
-  // return result;
-  const { web3Ref, contractAddress, contractABI } = payload;
+  const contractAddress = '0xb0a14E64E6a74A397fbaA94cC700158Bf655BD99';
+  const { web3Ref, contractABI, method } = payload;
   const signer = web3Ref.getSigner();
   const contract = new ethers.Contract(contractAddress, contractABI, signer);
-  const res = await contract.getPuzzlesByCreator(
-    '0xffff08F4369503a779C74890C7bA5F94cb52fbbB'
-  );
+  const res = await contract[method]();
   console.log(res);
 };
 
-export const getVestingContract = async (w3: any) => {
-  const contractAddress = '0x7784138c93A029210fF263D5ad6648a27631622d';
-  // const result = await readContractData(w3, contractAddress, abi, 'vestingContract', [])
+export const getPuzzleByCreater = async (w3: any) => {
   const result = await readContractData({
     web3Ref: w3,
-    contractAddress,
-    contractABI: abi
-    // method: 'puzzles',
-    // args: ['0xF0D675d78820D28b89CF457955D2aA595dD799e0']
+    contractABI: abi,
+    method: 'getPuzzlesByCreator'
+  });
+  return result;
+};
+
+export const getTotalList = async (w3: any) => {
+  const result = await readContractData({
+    web3Ref: w3,
+    contractABI: abi,
+    method: 'getTotalPuzzleList'
+  });
+  return result;
+};
+
+export const registerPuzzle = async (w3: any) => {
+  const result = await readContractData({
+    web3Ref: w3,
+    contractABI: abi,
+    method: 'registerPuzzle'
   });
   return result;
 };

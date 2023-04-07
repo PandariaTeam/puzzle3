@@ -42,7 +42,9 @@ export class UserStore {
   });
   getPuzzleList = flow(function* (this: UserStore) {
     try {
-      const res = yield fetchPuzzleList({ puzzleAddressList: [] });
+      const res = yield fetchPuzzleList({
+        puzzleAddressList: ['0x4D485A160594B056A9B0a7F54F84dCb5aD089fE2']
+      });
       console.log('res', res);
     } catch (error) {
       console.log('err', error);
