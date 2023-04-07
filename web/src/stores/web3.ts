@@ -1,7 +1,8 @@
 import * as ethers from 'ethers';
 import { makeAutoObservable, flow } from 'mobx';
 import { message } from 'antd';
-import { getPuzzleByCreater, chainId, getTotalList } from '@/utils/web3Utils';
+import { chainId, getTotalList, contractAddress } from '@/utils/web3Utils';
+import { abi } from '@/utils/abi';
 
 export class Web3Store {
   chainId = '';
@@ -56,8 +57,15 @@ export class Web3Store {
       message.warning('请切换到相应的chainId');
     }
   });
-
-  test = () => {
-    getTotalList(this.w3);
-  };
+  register = flow(function* (this: Web3Store, puzzleAddress: string) {
+    try {
+      console.log('s', this.w3);
+      const signer = this.w3.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      yield contract.registerPuzzle(puzzleAddress);
+    } catch (error) {
+      console.log('err', error);
+      message.warning('请切换到相应的chainId');
+    }
+  });
 }

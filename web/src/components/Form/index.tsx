@@ -4,6 +4,7 @@ import {
   ProCard,
   ProForm,
   ProFormList,
+  ProFormText,
   ProFormRadio,
   ProFormCheckbox,
   FormListActionType
@@ -131,15 +132,25 @@ const PuzzleForm = (props: Props) => {
           <ProForm
             form={form}
             submitter={{ render: renderSubmitter }}
-            onValuesChange={() =>
+            onValuesChange={(val) => {
+              if (val?.puzzleAddress)
+                formStore.updateAddress(val?.puzzleAddress);
               console.log(
                 'ss',
                 form.getFieldsValue(),
                 toJS(formStore.editSchema),
                 toJS(formStore.viewSchema)
-              )
-            }
+              );
+            }}
           >
+            {!preview && (
+              <ProFormText
+                name='puzzleAddress'
+                required
+                label='请输入合约地址'
+                placeholder='请输入合约地址'
+              />
+            )}
             {renderProList()}
           </ProForm>
         </ProCard>

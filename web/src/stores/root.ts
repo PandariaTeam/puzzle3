@@ -11,8 +11,8 @@ export class RootStore {
 
   constructor() {
     this.userStore = new UserStore();
-    this.formStore = new FormStore();
     this.helperStore = new FormHelperStore();
     this.web3Store = new Web3Store();
+    this.formStore = new FormStore({ web3Store: this.web3Store });
   }
 }

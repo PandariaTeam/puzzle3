@@ -37,8 +37,6 @@ function Home() {
     rootStore: { web3Store, userStore }
   } = useStore();
   useEffect(() => {
-    web3Store.connectToMetaMask();
-    web3Store.test();
     userStore.getPuzzleList();
   }, []);
   return (
