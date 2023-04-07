@@ -1,6 +1,6 @@
 import { makeAutoObservable, flow } from 'mobx';
 import dayjs from 'dayjs';
-import { getMetaDataById, createPuzzle, getPuzzleList } from '@/services/api';
+import { getMetaDataById, createPuzzle, fetchPuzzleList } from '@/services/api';
 import { IPuzzle3Metadata, Puzzle3Difficulty } from '@puzzle3/types';
 
 export class UserStore {
@@ -42,7 +42,7 @@ export class UserStore {
   });
   getPuzzleList = flow(function* (this: UserStore) {
     try {
-      const res = yield getPuzzleList({ puzzleAddressList: [] });
+      const res = yield fetchPuzzleList({ puzzleAddressList: [] });
       console.log('res', res);
     } catch (error) {
       console.log('err', error);

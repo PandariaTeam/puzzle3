@@ -8,7 +8,7 @@ export const getMetaDataById = (id: string) => {
 interface PuzzleListParmas {
   puzzleAddressList: string[];
 }
-export const getPuzzleList = (payload: PuzzleListParmas) => {
+export const fetchPuzzleList = (payload: PuzzleListParmas) => {
   return client.post('/list', { ...payload });
 };
 
