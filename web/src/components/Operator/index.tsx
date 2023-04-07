@@ -9,7 +9,7 @@ function HeaderOperator() {
     web3Store.connectToMetaMask();
   }, []);
 
-  return <p>连接钱包</p>;
+  return <p onClick={() => web3Store.connectToMetaMask()}>连接钱包</p>;
 }
 
 export default HeaderOperator;

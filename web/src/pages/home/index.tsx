@@ -7,7 +7,6 @@ import { Button, Tabs, message, theme } from 'antd';
 import { css } from '@emotion/css';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { PuzzleList } from './PuzzleList';
-// import { Puzzle3Difficulty } from '@puzzle3/types';
 
 function Home() {
   const {
