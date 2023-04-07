@@ -15,13 +15,13 @@ export class FormStore {
   puzzleAddress = '';
   web3Store: Web3Store;
   formData: IPuzzle3Metadata = {
-    name: 'amen',
-    author: 'yunbei',
+    name: '',
+    author: '',
+    description: '',
     difficulty: Puzzle3Difficulty.Easy,
     created: dayjs().valueOf(),
-    description: 'test',
-    completedDescription: 'sss',
-    contract: 'sasa',
+    completedDescription: '',
+    contract: '',
     deployParams: [],
     formSchema: {}
   };
@@ -36,6 +36,9 @@ export class FormStore {
   }
   updateIndex(index: number) {
     this.currentIndex = index;
+  }
+  updateFormData(payload: Partial<IPuzzle3Metadata>) {
+    this.formData = { ...this.formData, ...payload };
   }
   updateAddress(address: string) {
     this.puzzleAddress = address;
@@ -64,6 +67,7 @@ export class FormStore {
     try {
       const metadata = {
         ...this.formData,
+        autor: window?.ethereum?.selectedAddress ?? '',
         formSchema: JSON.stringify(this.editSchema)
       };
       if (!this.puzzleAddress) return;

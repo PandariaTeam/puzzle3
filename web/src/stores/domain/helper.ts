@@ -15,6 +15,6 @@ export const initialValue = {
     position: 'button',
     type: 'dashed',
     icon: 'PlusOutlined'
-  },
-  label: 'Hello Web3'
+  }
+  // label: 'Hello Web3'
 };

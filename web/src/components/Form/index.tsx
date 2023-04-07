@@ -7,6 +7,7 @@ import {
   ProFormText,
   ProFormRadio,
   ProFormCheckbox,
+  ProFormTextArea,
   FormListActionType
 } from '@ant-design/pro-components';
 import { Button } from 'antd';
@@ -18,7 +19,7 @@ import { useStore } from '@/context';
 import { Exam, IssueType } from '@/stores/domain';
 import PuzzleFormHelper from './helper';
 import { PuzzleDrawer } from './draw';
-import { labelCls, titleCls } from './style';
+import { titleCls } from './style';
 import { BaseProps } from './constant';
 
 interface Props extends BaseProps {}
@@ -127,11 +128,11 @@ const PuzzleForm = (props: Props) => {
           );
         }}
         name='examinations'
-        label={
-          <p className={labelCls}>
-            {(helperStore.stateValue as any)?.label ?? 'Hello Web3'}
-          </p>
-        }
+        // label={
+        //   <p className={labelCls}>
+        //     {(helperStore.stateValue as any)?.label ?? 'Hello Web3'}
+        //   </p>
+        // }
         initialValue={dataSorce.map(() => null)}
         creatorButtonProps={{
           position: 'bottom'
@@ -152,6 +153,12 @@ const PuzzleForm = (props: Props) => {
             onValuesChange={(val) => {
               if (val?.puzzleAddress)
                 formStore.updateAddress(val?.puzzleAddress);
+              if (val?.puzzleName)
+                formStore.updateFormData({ name: val?.puzzleName ?? '' });
+              if (val?.puzzleDesc)
+                formStore.updateFormData({
+                  description: val?.puzzleDesc ?? ''
+                });
               console.log(
                 'ss',
                 form.getFieldsValue(),
@@ -166,6 +173,22 @@ const PuzzleForm = (props: Props) => {
                 required
                 label='请输入合约地址'
                 placeholder='请输入合约地址'
+              />
+            )}
+            {!preview && (
+              <ProFormText
+                name='puzzleName'
+                required
+                label='请输入puzzle标题'
+                placeholder='请输入puzzle标题'
+              />
+            )}
+            {!preview && (
+              <ProFormTextArea
+                name='puzzleDesc'
+                required
+                label='请输入描述信息'
+                placeholder='请输入描述信息'
               />
             )}
             {renderProList()}
