@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { PageContainer, ProList } from '@ant-design/pro-components';
+import { PageContainer } from '@ant-design/pro-components';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/context';
@@ -22,11 +22,14 @@ function Home() {
   useEffect(() => {
     getTotal();
   }, []);
-  const { puzzleList } = web3Store;
+  const { puzzleList, createLoading } = web3Store;
   const { token } = theme.useToken();
   const [tab, setTab] = useState('total');
   const history = useNavigate();
-
+  const onClickSolve = async (address: string) => {
+    const res = await web3Store.createInstance(address);
+    history(`/user/${address}/${res}`);
+  };
   return (
     <PageContainer
       // ghost
@@ -138,8 +141,9 @@ function Home() {
           />
           <PuzzleList
             loading={loading}
+            createLoading={createLoading}
             list={tab === 'total' ? puzzleList : []}
-            onClickSolve={console.log}
+            onClickSolve={(val) => onClickSolve(val)}
           />
         </>
       ) : null}
