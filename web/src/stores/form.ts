@@ -1,5 +1,6 @@
 import { makeAutoObservable, flow } from 'mobx';
 import dayjs from 'dayjs';
+import { message } from 'antd';
 import { createPuzzle, getMetaDataById } from '@/services/api';
 import { IPuzzle3Metadata, Puzzle3Difficulty } from '@puzzle3/types';
 import { EditSchema, initEditSchema } from './domain';
@@ -73,9 +74,10 @@ export class FormStore {
         }),
         this.web3Store.register(this.puzzleAddress)
       ]);
-      console.log('res', res);
+      return res;
     } catch (error) {
-      console.log('err', error);
+      message.warning('该合约不符合Puzzle3的要求');
+      return false;
     }
   });
   getInfo = flow(function* (this: FormStore, id: string) {

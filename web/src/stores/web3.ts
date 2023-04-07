@@ -1,13 +1,15 @@
 import * as ethers from 'ethers';
 import { makeAutoObservable, flow } from 'mobx';
 import { message } from 'antd';
-import { chainId, getTotalList, contractAddress } from '@/utils/web3Utils';
+import { fetchPuzzleList } from '@/services/api';
+import { chainId, contractAddress } from '@/utils/web3Utils';
 import { abi } from '@/utils/abi';
 
 export class Web3Store {
   chainId = '';
   selectedAddress = '';
   w3: any = null;
+  puzzleList = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -58,14 +60,22 @@ export class Web3Store {
     }
   });
   register = flow(function* (this: Web3Store, puzzleAddress: string) {
+    const signer = this.w3.getSigner();
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    yield contract.registerPuzzle(puzzleAddress);
+  });
+
+  getTotalList = flow(function* (this: Web3Store) {
     try {
-      console.log('s', this.w3);
       const signer = this.w3.getSigner();
       const contract = new ethers.Contract(contractAddress, abi, signer);
-      yield contract.registerPuzzle(puzzleAddress);
+      const puzzleAddressList: [] = yield contract.getTotalPuzzleList();
+      const res = yield fetchPuzzleList({
+        puzzleAddressList
+      });
+      this.puzzleList = res ?? [];
     } catch (error) {
-      console.log('err', error);
-      message.warning('请切换到相应的chainId');
+      message.warning('该合约不符合Puzzle3的要求');
     }
   });
 }

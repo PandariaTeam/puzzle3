@@ -34,10 +34,10 @@ const dataSource = [
 
 function Home() {
   const {
-    rootStore: { web3Store, userStore }
+    rootStore: { web3Store }
   } = useStore();
   useEffect(() => {
-    userStore.getPuzzleList();
+    web3Store.getTotalList();
   }, []);
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
