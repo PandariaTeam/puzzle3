@@ -7,55 +7,24 @@ import { Button, Tabs, message, theme } from 'antd';
 import { css } from '@emotion/css';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { PuzzleList } from './PuzzleList';
-import { Puzzle3Difficulty } from '@puzzle3/types';
-
-const total = [
-  {
-    puzzleAddress: '0xffff08F4369503a779C74890C7bA5F94cb52fbb1',
-    metadata: {
-      name: 'HelloWorld',
-      author: '0xffff08F4369503a779C74890C7bA5F94cb52fbbB',
-      created: 1680868822,
-      difficulty: Puzzle3Difficulty.Easy,
-      description: `我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述
-      我是很长的描述我是很长的描述我是很长的描述我是很长的描述
-      我是很长的描述我是很长的描述
-      我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述`,
-      completedDescription: '',
-      contract: '',
-      deployParams: [],
-      formSchema: {}
-    }
-  },
-  {
-    puzzleAddress: '0xffff08F4369503a779C74890C7bA5F94cb52fbb2',
-    metadata: {
-      name: 'HelloWorld2',
-      author: '0xffff08F4369503a779C74890C7bA5F94cb52fbbB3',
-      created: 1680868823,
-      difficulty: Puzzle3Difficulty.Medium,
-      description: `我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述
-      我是很长的描述我是很长的描述我是很长的描述我是很长的描述
-      我是很长的描述我是很长的描述
-      我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述我是很长的描述`,
-      completedDescription: '',
-      contract: '',
-      deployParams: [],
-      formSchema: {}
-    }
-  }
-];
+// import { Puzzle3Difficulty } from '@puzzle3/types';
 
 function Home() {
   const {
     rootStore: { web3Store }
   } = useStore();
+  const [loading, setLoading] = useState(false);
+  const getTotal = async () => {
+    setLoading(true);
+    await web3Store.getTotalList();
+    setLoading(false);
+  };
   useEffect(() => {
-    web3Store.getTotalList();
+    getTotal();
   }, []);
-
+  const { puzzleList } = web3Store;
   const { token } = theme.useToken();
-  const [tab, setTab] = useState<string>('total');
+  const [tab, setTab] = useState('total');
   const history = useNavigate();
 
   return (
@@ -168,7 +137,8 @@ function Home() {
             ]}
           />
           <PuzzleList
-            list={tab === 'total' ? total : []}
+            loading={loading}
+            list={tab === 'total' ? puzzleList : []}
             onClickSolve={console.log}
           />
         </>

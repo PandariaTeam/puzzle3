@@ -10,12 +10,14 @@ export interface IPuzzle {
 
 export interface IPuzzleListProps {
   list: IPuzzle[];
+  loading: boolean;
   onClickSolve: (puzzleAddress: string) => void | Promise<void>;
 }
 
 export const PuzzleList: React.FC<IPuzzleListProps> = ({
   list,
-  onClickSolve
+  onClickSolve,
+  loading
 }) => {
   if (!list.length) {
     return (
@@ -32,6 +34,7 @@ export const PuzzleList: React.FC<IPuzzleListProps> = ({
       dataSource={list}
       showActions='hover'
       showExtra='hover'
+      loading={loading}
       metas={{
         title: {
           dataIndex: ['metadata', 'name']

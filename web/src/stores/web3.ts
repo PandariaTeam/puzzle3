@@ -73,7 +73,7 @@ export class Web3Store {
       const res = yield fetchPuzzleList({
         puzzleAddressList
       });
-      this.puzzleList = res ?? [];
+      this.puzzleList = res?.list ?? [];
     } catch (error) {
       message.warning('该合约不符合Puzzle3的要求');
     }
