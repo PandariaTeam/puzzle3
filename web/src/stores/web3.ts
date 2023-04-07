@@ -93,4 +93,15 @@ export class Web3Store {
       message.warning('该合约不符合Puzzle3的要求');
     }
   });
+  submitInstance = flow(function* (this: Web3Store, instanceAddress?: string) {
+    try {
+      if (!instanceAddress) return;
+      const signer = this.w3.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const res = yield contract.submitPuzzleInstance(instanceAddress);
+      console.log('res', res);
+    } catch (error) {
+      message.warning('该合约不符合Puzzle3的要求');
+    }
+  });
 }
