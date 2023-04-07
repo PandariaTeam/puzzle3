@@ -99,7 +99,7 @@ export class Web3Store {
       const signer = this.w3.getSigner();
       const contract = new ethers.Contract(contractAddress, abi, signer);
       const res = yield contract.submitPuzzleInstance(instanceAddress);
-      console.log('res', res);
+      return res;
     } catch (error) {
       message.warning('该合约不符合Puzzle3的要求');
     }

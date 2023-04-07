@@ -11,7 +11,7 @@ import {
   ProFormTextArea,
   FormListActionType
 } from '@ant-design/pro-components';
-import { Button } from 'antd';
+import { Button, Modal, Image } from 'antd';
 import { useRef, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
@@ -61,11 +61,28 @@ const PuzzleForm = (props: Props) => {
   };
   const onSubmit = async () => {
     setSubmitLoading(true);
-    const res = preview
-      ? await web3Store.submitInstance(instanceId)
-      : await formStore.create();
+    let res;
+    let tokenId;
+    if (preview) {
+      const examinations = form.getFieldsValue()?.examinations ?? [];
+      const current = examinations.map((item: Exam) => item.option);
+      tokenId = await formStore.submitInstance({ instanceId, current });
+      // res = await web3Store.submitInstance(instanceId);
+    } else {
+      res = await formStore.create();
+    }
     setSubmitLoading(false);
-    if (res) navigate('/');
+    if (res && !preview) navigate('/');
+    if (tokenId && preview) {
+      Modal.success({
+        title: '恭喜您完成答题',
+        content: (
+          <Image
+            src={`https://service.puzzle3.cc/puzzles/{puzzleAddress}/${tokenId}/img.svg`}
+          />
+        )
+      });
+    }
   };
   const renderSubmitter = () => {
     return [
@@ -169,12 +186,7 @@ const PuzzleForm = (props: Props) => {
                 formStore.updateFormData({
                   description: val?.puzzleDesc ?? ''
                 });
-              console.log(
-                'ss',
-                form.getFieldsValue(),
-                toJS(formStore.editSchema),
-                toJS(formStore.viewSchema)
-              );
+              console.log('ss', toJS(formStore.viewSchema));
             }}
           >
             {!preview && (

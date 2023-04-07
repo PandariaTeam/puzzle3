@@ -54,6 +54,16 @@ export class FormStore {
   removeItem(index: number) {
     this.editSchema = this.editSchema.splice(index, 1);
   }
+  validate(current: string[]) {
+    const { viewSchema } = this;
+    const answers = viewSchema.map((item) => item.answer);
+    const wrongList: number[] = [];
+    answers.forEach((item, index) => {
+      if (item !== current[index]) wrongList.push(index + 1);
+    });
+    if (wrongList.length) message.error(`第${wrongList.join(',')}道题有误`);
+    return wrongList.length;
+  }
   updateEditSchema(schema: EditSchema) {
     const { editSchema, currentIndex } = this;
     this.editSchema = [
@@ -82,6 +92,15 @@ export class FormStore {
       message.warning('该合约不符合Puzzle3的要求');
       return false;
     }
+  });
+  submitInstance = flow(function* (this: FormStore, payload: any) {
+    const { current, instanceId } = payload;
+    if (this.validate(current)) return;
+    const tx = yield this.web3Store.submitInstance(instanceId);
+    const res = yield tx.wait();
+    const tokenId = res?.events?.[0]?.topics?.[3];
+    return tokenId;
+    // console.log('res', tokenId);
   });
   getInfo = flow(function* (this: FormStore, id: string) {
     try {
