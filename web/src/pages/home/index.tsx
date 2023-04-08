@@ -13,18 +13,19 @@ function Home() {
     rootStore: { web3Store }
   } = useStore();
   const [loading, setLoading] = useState(false);
-  const getTotal = async () => {
+  const getTotal = async (tab: string) => {
     setLoading(true);
-    await web3Store.getTotalList();
+    if (tab === 'total') await web3Store.getTotalList();
+    if (tab === 'owned') await web3Store.getListByCreator();
     setLoading(false);
   };
-  useEffect(() => {
-    getTotal();
-  }, []);
-  const { puzzleList, createLoading } = web3Store;
+  const { puzzleList, createLoading, creatorList } = web3Store;
   const { token } = theme.useToken();
   const [tab, setTab] = useState('total');
   const history = useNavigate();
+  useEffect(() => {
+    getTotal(tab);
+  }, [tab]);
   const onClickSolve = async (address: string) => {
     const res = await web3Store.createInstance(address);
     history(`/user/${address}/${res}`);
@@ -142,7 +143,7 @@ function Home() {
             loading={loading}
             empty={web3Store.empty}
             createLoading={createLoading}
-            list={tab === 'total' ? puzzleList : []}
+            list={tab === 'total' ? puzzleList : creatorList}
             onClickSolve={(val) => onClickSolve(val)}
           />
         </>

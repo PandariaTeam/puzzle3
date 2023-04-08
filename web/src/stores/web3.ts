@@ -13,6 +13,7 @@ export class Web3Store {
   empty = false;
 
   puzzleList = [];
+  creatorList = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -79,6 +80,23 @@ export class Web3Store {
       if (res?.list?.length === 0) this.empty = true;
       this.puzzleList = res?.list ?? [];
     } catch (error) {
+      message.warning('合约遇到了点问题，请稍后再试');
+    }
+  });
+  getListByCreator = flow(function* (this: Web3Store) {
+    try {
+      const signer = this.w3.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      const puzzleAddressList: [] = yield contract.getPuzzlesByCreator(
+        this.selectedAddress
+      );
+      const res = yield fetchPuzzleList({
+        puzzleAddressList
+      });
+      if (res?.list?.length === 0) this.empty = true;
+      this.creatorList = res?.list ?? [];
+    } catch (error) {
+      console.log('asas', error);
       message.warning('合约遇到了点问题，请稍后再试');
     }
   });
