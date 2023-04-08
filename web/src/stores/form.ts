@@ -99,12 +99,16 @@ export class FormStore {
     }
   });
   submitInstance = flow(function* (this: FormStore, payload: any) {
-    const { current, instanceId } = payload;
-    if (this.validate(current)) return;
-    const tx = yield this.web3Store.submitInstance(instanceId);
-    const res = yield tx.wait();
-    const tokenId = res?.events?.[0]?.topics?.[3];
-    return tokenId;
+    try {
+      const { current, instanceId } = payload;
+      if (this.validate(current)) return;
+      const tx = yield this.web3Store.submitInstance(instanceId);
+      const res = yield tx.wait();
+      const tokenId = res?.events?.[0]?.topics?.[3];
+      return tokenId;
+    } catch (error) {
+      message.warning('合约体有误');
+    }
   });
   getInfo = flow(function* (this: FormStore, id: string) {
     try {

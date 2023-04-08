@@ -187,7 +187,6 @@ const PuzzleForm = (props: Props) => {
                 formStore.updateFormData({
                   description: val?.puzzleDesc ?? ''
                 });
-              console.log('ss', toJS(formStore.viewSchema));
             }}
           >
             {!preview && (
