@@ -12,7 +12,8 @@ import { Context } from './context';
 import getMetadataRoute from './routes/get_metadata';
 import getPuzzlesListRoute from './routes/get_metadata_list';
 import postMetadataRoute from './routes/post_metadata';
-import { getLogo } from './assets/logo';
+import getNftMetadataRoute from './routes/get_nft_metadata';
+import getNftImage from './routes/get_nft_image';
 
 const router = Router();
 
@@ -48,62 +49,8 @@ export default {
             }
           })
       )
-      .get(
-        '/puzzles/:puzzleId/:nftId/img.svg',
-        () =>
-          new Response(getLogo(), {
-            headers: {
-              'Content-Type': 'image/svg+xml'
-            }
-          })
-      )
-      .get('/puzzles/:puzzleId/:nftId', (req) => {
-        const { puzzleId, nftId } = req.params;
-        console.log(puzzleId);
-        return Response.json(
-          {
-            name: `Puzzle3 #${nftId}`,
-            description: 'test puzzle',
-            image: `https://service.puzzle3.cc/puzzles/${puzzleId}/${nftId}/img.svg`,
-            // image: 'https://i.328888.xyz/2023/04/06/iNZt3L.png',
-            attributes: [
-              {
-                trait_type: 'background',
-                value: 'blue'
-              },
-              {
-                trait_type: 'type',
-                value: 'charcoal mfer'
-              },
-              {
-                trait_type: 'eyes',
-                value: 'regular eyes'
-              },
-              {
-                trait_type: 'mouth',
-                value: 'smile'
-              },
-              {
-                trait_type: 'headphones',
-                value: 'black headphones'
-              },
-              {
-                trait_type: 'long hair',
-                value: 'long hair yellow'
-              },
-              {
-                trait_type: '4:20 watch',
-                value: 'argo black'
-              },
-              {
-                trait_type: 'smoke',
-                value: 'cig white'
-              }
-            ]
-          },
-          { status: 200 }
-        );
-      })
+      .get('/puzzles/:puzzleAddress/:tokenId/img.svg', getNftImage)
+      .get('/puzzles/:puzzleAddress/:tokenId', getNftMetadataRoute)
       // 根据 puzzle address 获取详情
       .get('/api/metadata/:puzzleAddress', getMetadataRoute)
       // 根据 puzzle address list 获取详情列表

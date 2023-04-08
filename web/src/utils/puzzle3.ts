@@ -58,10 +58,8 @@ export class Puzzle3 {
     return ethers.utils.formatEther(BigInt(balance));
   }
 
-  getMethodSignature(method: string, params: string[], values: string[]) {
-    const c = new ethers.utils.Interface([
-      `function ${method}(${params.map((p, i) => `${p} arg${i}`).join(', ')})`
-    ]);
+  getMethodSignature(method: string, sig: string, values: string[]) {
+    const c = new ethers.utils.Interface([sig]);
     return c.encodeFunctionData(method, values);
   }
 
@@ -79,7 +77,10 @@ export class Puzzle3 {
       method: 'eth_sendTransaction',
       params: [raw]
     });
-    console.log('See tx in etherscan:', `https://sepolia.etherscan.io/tx/${tx}`);
+    console.log(
+      'See tx in etherscan:',
+      `https://sepolia.etherscan.io/tx/${tx}`
+    );
     return tx;
   }
 
