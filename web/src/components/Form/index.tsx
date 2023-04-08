@@ -201,8 +201,8 @@ const PuzzleForm = (props: Props) => {
               <ProFormText
                 name='puzzleName'
                 required
-                label='请输入puzzle标题'
-                placeholder='请输入puzzle标题'
+                label='请输入Puzzle标题'
+                placeholder='请输入Puzzle标题'
               />
             )}
             {!preview && (

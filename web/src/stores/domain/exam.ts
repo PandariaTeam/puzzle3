@@ -13,10 +13,14 @@ export interface EditSchema {
 }
 
 export const initEditSchema: EditSchema = {
-  name: '测试题目',
+  name: 'Solidity是什么',
   type: IssueType.Single,
-  examinations: [{ option: '111' }, { option: '222' }, { option: '333' }],
-  answer: '111'
+  examinations: [
+    { option: '编写以太坊虚拟机（EVM）的语言' },
+    { option: '编写智能合约的语言' },
+    { option: '编写比特币的语言' }
+  ],
+  answer: '编写智能合约的语言'
 };
 
 export const initViewSchema = [{ option: '' }];

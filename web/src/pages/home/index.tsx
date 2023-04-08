@@ -140,6 +140,7 @@ function Home() {
           />
           <PuzzleList
             loading={loading}
+            empty={web3Store.empty}
             createLoading={createLoading}
             list={tab === 'total' ? puzzleList : []}
             onClickSolve={(val) => onClickSolve(val)}
