@@ -56,10 +56,15 @@ export class FormStore {
   }
   validate(current: string[]) {
     const { viewSchema } = this;
-    const answers = viewSchema.map((item) => item.answer);
+    const answers = viewSchema.map((item) => {
+      return { answer: item.answer, type: item.type };
+    });
     const wrongList: number[] = [];
     answers.forEach((item, index) => {
-      if (item !== current[index]) wrongList.push(index + 1);
+      if (item.type === 1 && item.answer !== current[index])
+        wrongList.push(index + 1);
+      if (item.type === 2 && item.answer !== (current[index] as any).join(','))
+        wrongList.push(index + 1);
     });
     if (wrongList.length) message.error(`第${wrongList.join(',')}道题有误`);
     return wrongList.length;
