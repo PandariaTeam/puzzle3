@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
+import { Typography } from 'antd';
+import { observer } from 'mobx-react-lite';
 import { useStore } from '@/context';
 
+const { Text } = Typography;
 function HeaderOperator() {
   const {
     rootStore: { web3Store }
@@ -9,7 +12,17 @@ function HeaderOperator() {
     web3Store.connectToMetaMask();
   }, []);
 
-  return <p onClick={() => web3Store.connectToMetaMask()}>连接钱包</p>;
+  return (
+    <Text
+      style={{ width: 200 }}
+      ellipsis={{
+        tooltip: `${window.ethereum.selectedAddress}`
+      }}
+      onClick={() => web3Store.connectToMetaMask()}
+    >
+      {web3Store.selectedAddress ? web3Store.selectedAddress : '连接钱包'}
+    </Text>
+  );
 }
 
-export default HeaderOperator;
+export default observer(HeaderOperator);
