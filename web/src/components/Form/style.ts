@@ -14,3 +14,8 @@ export const titleCls = css`
     margin-right: 10px;
   }
 `;
+
+export const modalContentCls = css`
+  padding-top: 20px;
+  padding-left: 30px;
+`;

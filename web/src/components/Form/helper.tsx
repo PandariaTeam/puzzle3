@@ -82,7 +82,7 @@ const PuzzleFormHelper = (props: BaseProps) => {
               helperStore.setValue(values);
             }}
           >
-            <ProForm.Group title='Puzzle标题配置'>
+            {/* <ProForm.Group title='Puzzle标题配置'>
               <ProFormDependency name={['label']}>
                 {() => {
                   // if (!label.text) return null;
@@ -93,7 +93,7 @@ const PuzzleFormHelper = (props: BaseProps) => {
                   );
                 }}
               </ProFormDependency>
-            </ProForm.Group>
+            </ProForm.Group> */}
             <ProForm.Group
               title='新建按钮配置'
               extra={

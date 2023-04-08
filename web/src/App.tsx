@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { Image } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import HeaderOperator from '@/components/Operator';
 import Home from './pages/home';
 import User from './pages/user';
@@ -9,7 +11,14 @@ import { DefaultFooter, ProLayout } from '@ant-design/pro-components';
 function App() {
   return (
     <ProLayout
-      logo='https://i.328888.xyz/2023/04/06/iNZt3L.png'
+      logo={
+        <Image
+          onClick={() => window.open('https://www.puzzle3.cc/')}
+          width={32}
+          preview={false}
+          src='https://i.328888.xyz/2023/04/06/iNZt3L.png'
+        />
+      }
       title='Puzzle3'
       layout='top'
       actionsRender={() => {

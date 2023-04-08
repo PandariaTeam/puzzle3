@@ -7,7 +7,6 @@ import { Button, Tabs, message, theme } from 'antd';
 import { css } from '@emotion/css';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { PuzzleList } from './PuzzleList';
-// import { Puzzle3Difficulty } from '@puzzle3/types';
 
 function Home() {
   const {
@@ -141,6 +140,7 @@ function Home() {
           />
           <PuzzleList
             loading={loading}
+            empty={web3Store.empty}
             createLoading={createLoading}
             list={tab === 'total' ? puzzleList : []}
             onClickSolve={(val) => onClickSolve(val)}

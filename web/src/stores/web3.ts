@@ -10,6 +10,7 @@ export class Web3Store {
   selectedAddress = '';
   createLoading = false;
   w3: any = null;
+  empty = false;
 
   puzzleList = [];
 
@@ -75,6 +76,7 @@ export class Web3Store {
       const res = yield fetchPuzzleList({
         puzzleAddressList
       });
+      if (res?.list?.length === 0) this.empty = true;
       this.puzzleList = res?.list ?? [];
     } catch (error) {
       message.warning('该合约不符合Puzzle3的要求');
@@ -99,7 +101,7 @@ export class Web3Store {
       const signer = this.w3.getSigner();
       const contract = new ethers.Contract(contractAddress, abi, signer);
       const res = yield contract.submitPuzzleInstance(instanceAddress);
-      console.log('res', res);
+      return res;
     } catch (error) {
       message.warning('该合约不符合Puzzle3的要求');
     }

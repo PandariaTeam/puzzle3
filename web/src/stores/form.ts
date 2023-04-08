@@ -7,7 +7,6 @@ import { EditSchema, initEditSchema } from './domain';
 import { Web3Store } from './web3';
 // const puzzleAddress = '0x3CA869f65e32279D5e827b156320537C3e8c894c';
 export class FormStore {
-  preview = true;
   drawerVisible = false;
   editSchema: EditSchema[] = [initEditSchema];
   viewSchema: EditSchema[] = [];
@@ -15,13 +14,13 @@ export class FormStore {
   puzzleAddress = '';
   web3Store: Web3Store;
   formData: IPuzzle3Metadata = {
-    name: 'amen',
-    author: 'yunbei',
+    name: '',
+    author: '',
+    description: '',
     difficulty: Puzzle3Difficulty.Easy,
     created: dayjs().valueOf(),
-    description: 'test',
-    completedDescription: 'sss',
-    contract: 'sasa',
+    completedDescription: '',
+    contract: '',
     deployParams: [],
     formSchema: {}
   };
@@ -36,6 +35,9 @@ export class FormStore {
   }
   updateIndex(index: number) {
     this.currentIndex = index;
+  }
+  updateFormData(payload: Partial<IPuzzle3Metadata>) {
+    this.formData = { ...this.formData, ...payload };
   }
   updateAddress(address: string) {
     this.puzzleAddress = address;
@@ -52,6 +54,16 @@ export class FormStore {
   removeItem(index: number) {
     this.editSchema = this.editSchema.splice(index, 1);
   }
+  validate(current: string[]) {
+    const { viewSchema } = this;
+    const answers = viewSchema.map((item) => item.answer);
+    const wrongList: number[] = [];
+    answers.forEach((item, index) => {
+      if (item !== current[index]) wrongList.push(index + 1);
+    });
+    if (wrongList.length) message.error(`第${wrongList.join(',')}道题有误`);
+    return wrongList.length;
+  }
   updateEditSchema(schema: EditSchema) {
     const { editSchema, currentIndex } = this;
     this.editSchema = [
@@ -64,6 +76,7 @@ export class FormStore {
     try {
       const metadata = {
         ...this.formData,
+        author: window?.ethereum?.selectedAddress ?? '',
         formSchema: JSON.stringify(this.editSchema)
       };
       if (!this.puzzleAddress) return;
@@ -80,10 +93,21 @@ export class FormStore {
       return false;
     }
   });
+  submitInstance = flow(function* (this: FormStore, payload: any) {
+    const { current, instanceId } = payload;
+    if (this.validate(current)) return;
+    const tx = yield this.web3Store.submitInstance(instanceId);
+    const res = yield tx.wait();
+    const tokenId = res?.events?.[0]?.topics?.[3];
+    return tokenId;
+  });
   getInfo = flow(function* (this: FormStore, id: string) {
     try {
       const res = yield getMetaDataById(id);
       this.viewSchema = JSON.parse(res?.metadata?.formSchema);
+      this.formData = {
+        ...res?.metadata
+      };
     } catch (error) {
       console.log('err', error);
     }

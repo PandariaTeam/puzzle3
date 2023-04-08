@@ -12,6 +12,7 @@ export interface IPuzzleListProps {
   list: IPuzzle[];
   loading: boolean;
   createLoading: boolean;
+  empty: boolean;
   onClickSolve: (puzzleAddress: string) => void | Promise<void>;
 }
 
@@ -19,9 +20,10 @@ export const PuzzleList: React.FC<IPuzzleListProps> = ({
   list,
   onClickSolve,
   loading,
-  createLoading
+  createLoading,
+  empty
 }) => {
-  if (!list.length) {
+  if (empty) {
     return (
       <Empty
         image='https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg'
