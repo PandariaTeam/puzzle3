@@ -10,14 +10,14 @@ async function main() {
   const testPuzzle = await TestPuzzle.deploy();
 
   await testPuzzle.deployed();
-  console.log(`TestPuzzle contract deployed to ${testPuzzle.address}`);
+  console.log(`Puzzle contract deployed to ${testPuzzle.address}`);
 
-  await sleep(5000);
+  await sleep(10000);
 
   await hardhat.run('verify', {
     address: testPuzzle.address, // '0x7d4741D2C7a9BcB9dA9e9D29d12a8feB115f00cB',
     constructorArgsParams: [],
-    contract: 'contracts/Test/Puzzle.sol:Puzzle',
+    contract: 'contracts/Basic/Puzzle.sol:Puzzle',
   });
 }
 

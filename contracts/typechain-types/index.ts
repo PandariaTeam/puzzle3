@@ -24,9 +24,9 @@ export type { IERC165 } from "./@openzeppelin/contracts/utils/introspection/IERC
 export { IERC165__factory } from "./factories/@openzeppelin/contracts/utils/introspection/IERC165__factory";
 export type { BasePuzzle } from "./contracts/BasePuzzle";
 export { BasePuzzle__factory } from "./factories/contracts/BasePuzzle__factory";
+export type { Instance } from "./contracts/Basic/Instance";
+export { Instance__factory } from "./factories/contracts/Basic/Instance__factory";
+export type { Puzzle } from "./contracts/Basic/Puzzle";
+export { Puzzle__factory } from "./factories/contracts/Basic/Puzzle__factory";
 export type { Puzzle3 } from "./contracts/Puzzle3";
 export { Puzzle3__factory } from "./factories/contracts/Puzzle3__factory";
-export type { Instance } from "./contracts/Test/Instance";
-export { Instance__factory } from "./factories/contracts/Test/Instance__factory";
-export type { Puzzle } from "./contracts/Test/Puzzle";
-export { Puzzle__factory } from "./factories/contracts/Test/Puzzle__factory";

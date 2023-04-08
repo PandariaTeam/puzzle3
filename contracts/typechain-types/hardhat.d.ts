@@ -49,6 +49,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BasePuzzle__factory>;
     getContractFactory(
+      name: "Instance",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Instance__factory>;
+    getContractFactory(
+      name: "Puzzle",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Puzzle__factory>;
+    getContractFactory(
       name: "Puzzle3",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Puzzle3__factory>;
@@ -106,6 +114,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.BasePuzzle>;
+    getContractAt(
+      name: "Instance",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Instance>;
+    getContractAt(
+      name: "Puzzle",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Puzzle>;
     getContractAt(
       name: "Puzzle3",
       address: string,
