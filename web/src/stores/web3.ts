@@ -79,7 +79,7 @@ export class Web3Store {
       if (res?.list?.length === 0) this.empty = true;
       this.puzzleList = res?.list ?? [];
     } catch (error) {
-      message.warning('该合约不符合Puzzle3的要求');
+      message.warning('合约遇到了点问题，请稍后再试');
     }
   });
   createInstance = flow(function* (this: Web3Store, puzzleAddress: string) {
@@ -92,18 +92,14 @@ export class Web3Store {
       this.createLoading = false;
       return res?.events[0]?.args[1] ?? '';
     } catch (error) {
-      message.warning('该合约不符合Puzzle3的要求');
+      message.warning('合约遇到了点问题，请稍后再试');
     }
   });
   submitInstance = flow(function* (this: Web3Store, instanceAddress?: string) {
-    try {
-      if (!instanceAddress) return;
-      const signer = this.w3.getSigner();
-      const contract = new ethers.Contract(contractAddress, abi, signer);
-      const res = yield contract.submitPuzzleInstance(instanceAddress);
-      return res;
-    } catch (error) {
-      message.warning('该合约不符合Puzzle3的要求');
-    }
+    if (!instanceAddress) return;
+    const signer = this.w3.getSigner();
+    const contract = new ethers.Contract(contractAddress, abi, signer);
+    const res = yield contract.submitPuzzleInstance(instanceAddress);
+    return res;
   });
 }
