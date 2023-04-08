@@ -76,7 +76,7 @@ export class FormStore {
     try {
       const metadata = {
         ...this.formData,
-        autor: window?.ethereum?.selectedAddress ?? '',
+        author: window?.ethereum?.selectedAddress ?? '',
         formSchema: JSON.stringify(this.editSchema)
       };
       if (!this.puzzleAddress) return;
@@ -100,7 +100,6 @@ export class FormStore {
     const res = yield tx.wait();
     const tokenId = res?.events?.[0]?.topics?.[3];
     return tokenId;
-    // console.log('res', tokenId);
   });
   getInfo = flow(function* (this: FormStore, id: string) {
     try {

@@ -16,5 +16,4 @@ export const initialValue = {
     type: 'dashed',
     icon: 'PlusOutlined'
   }
-  // label: 'Hello Web3'
 };

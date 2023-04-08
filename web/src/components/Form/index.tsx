@@ -11,16 +11,17 @@ import {
   ProFormTextArea,
   FormListActionType
 } from '@ant-design/pro-components';
-import { Button, Modal, Image } from 'antd';
+import { Button, Modal, Image, message } from 'antd';
 import { useRef, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { toJS } from 'mobx';
 import { useStore } from '@/context';
 import { Exam, IssueType } from '@/stores/domain';
+import { frame } from '@/utils/show';
 import PuzzleFormHelper from './helper';
 import { PuzzleDrawer } from './draw';
-import { titleCls } from './style';
+import { titleCls, modalContentCls } from './style';
 import { BaseProps } from './constant';
 
 interface Props extends BaseProps {}
@@ -65,21 +66,24 @@ const PuzzleForm = (props: Props) => {
     let tokenId;
     if (preview) {
       const examinations = form.getFieldsValue()?.examinations ?? [];
-      const current = examinations.map((item: Exam) => item.option);
+      const current = examinations.map((item: Exam) => item?.option);
       tokenId = await formStore.submitInstance({ instanceId, current });
-      // res = await web3Store.submitInstance(instanceId);
     } else {
       res = await formStore.create();
     }
     setSubmitLoading(false);
     if (res && !preview) navigate('/');
     if (tokenId && preview) {
+      frame();
       Modal.success({
-        title: '恭喜您完成答题',
+        title: '恭喜您完成答题得到NFT奖励',
         content: (
-          <Image
-            src={`https://service.puzzle3.cc/puzzles/{puzzleAddress}/${tokenId}/img.svg`}
-          />
+          <div className={modalContentCls}>
+            <Image
+              width={200}
+              src={`https://service.puzzle3.cc/puzzles/0xFde8805C5adBee30cf163c1482429B91132665fA/0/img.svg`}
+            />
+          </div>
         )
       });
     }
@@ -93,8 +97,10 @@ const PuzzleForm = (props: Props) => {
         key='edit'
       >
         提交
-      </Button>,
-      <Button key='read'>重置</Button>
+      </Button>
+      // <Button key='read' onClick={() => frame()}>
+      //   重置
+      // </Button>
     ];
   };
   const renderProList = () => {
@@ -146,11 +152,6 @@ const PuzzleForm = (props: Props) => {
           );
         }}
         name='examinations'
-        // label={
-        //   <p className={labelCls}>
-        //     {(helperStore.stateValue as any)?.label ?? 'Hello Web3'}
-        //   </p>
-        // }
         initialValue={dataSorce.map(() => null)}
         creatorButtonProps={{
           position: 'bottom'

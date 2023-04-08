@@ -13,8 +13,9 @@ function App() {
     <ProLayout
       logo={
         <Image
-          onClick={() => (window.location.href = 'https://www.puzzle3.cc/')}
-          width={30}
+          onClick={() => window.open('https://www.puzzle3.cc/')}
+          width={32}
+          preview={false}
           src='https://i.328888.xyz/2023/04/06/iNZt3L.png'
         />
       }
