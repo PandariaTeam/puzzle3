@@ -28,5 +28,7 @@ export type { Instance } from "./contracts/Basic/Instance";
 export { Instance__factory } from "./factories/contracts/Basic/Instance__factory";
 export type { Puzzle } from "./contracts/Basic/Puzzle";
 export { Puzzle__factory } from "./factories/contracts/Basic/Puzzle__factory";
+export type { PuzzleDemo } from "./contracts/Demo/Puzzle.sol/PuzzleDemo";
+export { PuzzleDemo__factory } from "./factories/contracts/Demo/Puzzle.sol/PuzzleDemo__factory";
 export type { Puzzle3 } from "./contracts/Puzzle3";
 export { Puzzle3__factory } from "./factories/contracts/Puzzle3__factory";

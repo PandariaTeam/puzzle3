@@ -10,7 +10,7 @@ abstract contract BasePuzzle is ERC721, Ownable {
   Counters.Counter private _tokenIdCounter;
 
   // Puzzle3 address
-  address public constant puzzle3 = 0xb0a14E64E6a74A397fbaA94cC700158Bf655BD99;
+  address public constant puzzle3 = 0x1a86339ad7fBB50F753A0Eb44B0FdfD4BC931A44;
 
   constructor(
     string memory name_

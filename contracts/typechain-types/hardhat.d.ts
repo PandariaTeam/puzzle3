@@ -57,17 +57,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Puzzle__factory>;
     getContractFactory(
-      name: "Puzzle3",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Puzzle3__factory>;
-    getContractFactory(
       name: "Instance",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Instance__factory>;
     getContractFactory(
-      name: "Puzzle",
+      name: "PuzzleDemo",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Puzzle__factory>;
+    ): Promise<Contracts.PuzzleDemo__factory>;
+    getContractFactory(
+      name: "Puzzle3",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Puzzle3__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -125,20 +125,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Puzzle>;
     getContractAt(
-      name: "Puzzle3",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Puzzle3>;
-    getContractAt(
       name: "Instance",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Instance>;
     getContractAt(
-      name: "Puzzle",
+      name: "PuzzleDemo",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.Puzzle>;
+    ): Promise<Contracts.PuzzleDemo>;
+    getContractAt(
+      name: "Puzzle3",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Puzzle3>;
 
     // default types
     getContractFactory(
